@@ -4,7 +4,7 @@ import re
 import csv
 #import sqlite3
 
-url = 'www.shareprices.com/ftseallshare'
+url = 'http://www.shareprices.com/ftseallshare'
 
 
     #print str(asxlist["data"][x])[3:-2]
