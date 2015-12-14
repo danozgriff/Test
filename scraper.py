@@ -55,9 +55,10 @@ br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.
 
 response = br.open(url)
 
+
 for pagenum in range(1):
     html = response.read()
-    
+    print html
 #comp = re.search(r'MainContent_CompanyTicker(\w{3,}\.AX)span', html).group(0)
 #ASX_Code = '3PL.AX'
   
