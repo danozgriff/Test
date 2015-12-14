@@ -62,7 +62,8 @@ for pagenum in range(1):
 #ASX_Code = '3PL.AX'
   
 #print re.findall(r'MainContent_signalpagehistory_PatternHistory24((.)+)\<\\table\>', html) 
-    test1 = re.findall(r'Day\'s Volume(.*)>(.*)<(.*)endcol', html)
+    #test1 = re.findall(r'Day\'s Volume(.*)>(.*)<(.*)endcol', html)
+    test1 = re.findall('(Day\'s Volume)(.*?)>(.*?)<(.*?)(endcol)', test1.replace("\B", ""))
     print test1
 
  #       if test1:
