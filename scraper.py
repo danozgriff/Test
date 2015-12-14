@@ -4,7 +4,7 @@ import re
 import csv
 #import sqlite3
 
-url = 'http://shareprices.com/ftseallshare'
+url = 'www.shareprices.com/ftseallshare'
 
 
     #print str(asxlist["data"][x])[3:-2]
@@ -62,7 +62,7 @@ for pagenum in range(1):
 #ASX_Code = '3PL.AX'
   
 #print re.findall(r'MainContent_signalpagehistory_PatternHistory24((.)+)\<\\table\>', html) 
-    test1 = re.search(r'Day\'s Volume(.*?)>(.*?)<(.*?)endcol', html).group(0)
+    test1 = re.findall(r'Day\'s Volume(.*?)>(.*?)<(.*?)endcol', html)
     print test1
 
  #       if test1:
