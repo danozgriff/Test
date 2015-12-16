@@ -68,8 +68,8 @@ for pagenum in range(1):
     test1 = re.search(r'Day\'s Volume(.*?)<br \/><\/div>', html).group(0)
     for match in re.findall(r'(\">|\'>)(.*?)<\/', str(test1.replace(" ", "")).replace("><", "")):
         print match.strip('>,"')
-        ("'>", 'III') 
- ('">', '3iGroup')
+       # ("'>", 'III') 
+# ('">', '3iGroup')
         
     #test3 = re.findall(r'>(.*)<', test2)
     #print test3
