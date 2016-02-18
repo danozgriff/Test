@@ -69,7 +69,7 @@ for pagenum in range(1):
     #for match in re.findall(r'(\">|\'>)(.*?)<\/', str(test1.replace(" ", "")).replace("><", "")):
     test2 = re.findall(r'(\">|\'>)(.*?)<\/', str(test1.replace(" ", "")).replace("><", ""))
         #print re.search('', (.*?)', match).group()
-        print re.search('"'>"(.*?)', test2).group(0)
+    print re.search('"'>"(.*?)', test2).group(0)
         #print re.search(r'', (\.*\?)', match)
        # ("'>", 'III') 
 # ('">', '3iGroup')
