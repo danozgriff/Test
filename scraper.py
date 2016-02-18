@@ -66,9 +66,9 @@ for pagenum in range(1):
     #test1 = re.findall(r'Day\'s Volume(.*)>(.*)<(.*)endcol', html)
     #test1 = re.findall('(Day\'s Volume)(.*?)>(.*?)<(.*?)(endcol)', html)
     test1 = re.search(r'Day\'s Volume(.*?)<br \/><\/div>', html).group()
-    print test1
-    #for match in re.findall(r'(\">|\'>)(.*?)<\/', str(test1.replace(" ", "")).replace("><", "")):
-        #print re.search('\'\,\ (.*?)\', match).group()
+    for match in re.findall(r'(\">|\'>)(.*?)<\/', str(test1.replace(" ", "")).replace("><", "")):
+        print match
+        #print re.search('', (.*?)', match).group()
         #print re.search(r'', (\.*\?)', match)
        # ("'>", 'III') 
 # ('">', '3iGroup')
