@@ -68,10 +68,12 @@ for pagenum in range(1):
     test1 = re.search(r'Day\'s Volume(.*?)<br \/><\/div>', html).group()
     #for match in re.findall(r'(\">|\'>)(.*?)<\/', str(test1.replace(" ", "")).replace("><", "")):
     tuples = re.findall(r'(\">|\'>)(.*?)<\/', str(test1.replace(" ", "")).replace("><", ""))
+    count = 0
     for tuple in tuples:
         if len(tuple[1]) <= 4:
+            count = count+1
             print tuple[1]
-
+    print count
         #print re.search('', (.*?)', match).group()
         #print re.search(r'(\">|\'>)(.*?)', match).group(1)
         #print re.search(r'', (\.*\?)', match)
