@@ -69,6 +69,7 @@ for pagenum in range(1):
     #for match in re.findall(r'(\">|\'>)(.*?)<\/', str(test1.replace(" ", "")).replace("><", "")):
     tuples = re.findall(r'(\">|\'>)(.*?)<\/', str(test1.replace(" ", "")).replace("><", ""))
     for tuple in tuples:
+        if len(tuple[1]) <= 4
         print tuple[1]
 
         #print re.search('', (.*?)', match).group()
