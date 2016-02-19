@@ -72,7 +72,8 @@ for pagenum in range(1):
     for tuple in tuples:
         if len(tuple[1]) <= 4:
             count = count+1
-            print tuple[1]
+            #print tuple[1]
+            scraperwiki.sqlite.save(['GICS industry group'], tuple[1])
     print count
         #print re.search('', (.*?)', match).group()
         #print re.search(r'(\">|\'>)(.*?)', match).group(1)
