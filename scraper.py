@@ -70,7 +70,7 @@ for pagenum in range(1):
     tuples = re.findall(r'(\">|\'>)(.*?)<\/', str(test1.replace(" ", "")).replace("><", ""))
     count = 0
     for tuple in tuples:
-        if len(tuple[1]) <= 4:
+        if len(tuple[1]) <= 4 and tuple[1][-1:].isalpha():
             count = count+1
             #print tuple[1]
             scraperwiki.sqlite.save(["TIDM"], data={"TIDM":tuple[1]}, table_name='company')
