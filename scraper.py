@@ -73,7 +73,7 @@ for pagenum in range(1):
         if len(tuple[1]) <= 4:
             count = count+1
             #print tuple[1]
-            scraperwiki.sqlite.save(['TIDM'], str(tuple[1]), table_name='company')
+            scraperwiki.sqlite.save(["TIDM"], str(tuple[1]), table_name='company')
             scraperwiki.sqlite.commit()
     print count
         #print re.search('', (.*?)', match).group()
