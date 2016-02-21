@@ -26,8 +26,8 @@ br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.
 #scraperwiki.sqlite.execute("alter table company rename column `Date Added` to `Last Refreshed`")
 #scraperwiki.sqlite.execute("alter table company add `Top 500` char(1)")
 
-#scraperwiki.sqlite.execute("drop table if exists company")  
-#scraperwiki.sqlite.execute("create table company (`GICS industry group` string, `ASX code` string, `Company name` string, `Last Refreshed` date, `Top 500` char(1))")
+scraperwiki.sqlite.execute("drop table if exists company")  
+scraperwiki.sqlite.execute("create table company (`TIDM` string, `Company` string)
 #scraperwiki.sqlite.execute("drop table if exists Signal_History")  
 #scraperwiki.sqlite.execute("create table Signal_History (`ASX code` varchar2(8) NOT NULL, `Date` date NOT NULL, `Price` real NOT NULL, `Signal` varchar2(15) NOT NULL, `Confirmation` char(1) NOT NULL, `AUD 100` real NOT NULL, UNIQUE (`ASX code`, `Date`))")
 
@@ -73,7 +73,8 @@ for pagenum in range(1):
         if len(tuple[1]) <= 4:
             count = count+1
             #print tuple[1]
-            scraperwiki.sqlite.save(['GICS industry group'], tuple[1], table_name='company')
+            scraperwiki.sqlite.save(['TIDM'], str(tuple[1]), table_name='company')
+            scraperwiki.sqlite.commit()
     print count
         #print re.search('', (.*?)', match).group()
         #print re.search(r'(\">|\'>)(.*?)', match).group(1)
