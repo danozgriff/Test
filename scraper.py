@@ -239,7 +239,7 @@ def UpdateOpenTrades():
             currprice = z[0]
             currdate = datetime.datetime.strptime(z[1], "%Y-%m-%d").date()
             
-        print "live tidm: %s live date: %s live price: %s" % (currtidm, currdate, currprice)
+        print "live tidm: %s live date: %s live price: %s" % (tidm, currdate, currprice)
             
         if (opensignal=='BUY' or opensignal=='STAY LONG'): #and (currsignal=='SELL' or opensignal=='SHORT' or currsignal=='STAY SHORT' or currsignal=='STAY SHORT' or currsignal=='STAY IN CASH'):
           lastchange = round((currprice - openprice) / openprice,3)
