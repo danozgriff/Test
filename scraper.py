@@ -333,7 +333,7 @@ def ScrapeSignalHistory(runno):
         
         
     #scraperwiki.sqlite.execute("drop table if exists Signal_History")  
-    scraperwiki.sqlite.execute("create table Signal_History (`TIDM` varchar2(8) NOT NULL, `Date` date NOT NULL, `Price` real NOT NULL, `Signal` varchar2(15) NOT NULL, `Confirmation` char(1) NOT NULL, `GBP 100` real NOT NULL, `Last Updated` date NOT NULL,  UNIQUE (`TIDM`, `Date`))")
+    #scraperwiki.sqlite.execute("create table Signal_History (`TIDM` varchar2(8) NOT NULL, `Date` date NOT NULL, `Price` real NOT NULL, `Signal` varchar2(15) NOT NULL, `Confirmation` char(1) NOT NULL, `GBP 100` real NOT NULL, `Last Updated` date NOT NULL,  UNIQUE (`TIDM`, `Date`))")
     
     url = 'https://www.britishbulls.com/SignalPage.aspx?lang=en&Ticker='
     #lselist = scraperwiki.sqlite.execute("select distinct `TIDM` from company")
