@@ -808,7 +808,7 @@ if __name__ == '__main__':
     Logger(rundt, 'Main', 'Starting')
                                
     #while run == 1:
-      #gvars()
+    gvars()
       
     #scraperwiki.sqlite.execute("delete from trades")
     #Logger(rundt, 'ScrapeUserInput', None)
