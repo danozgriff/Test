@@ -807,12 +807,11 @@ if __name__ == '__main__':
       #if rerunflag = 0:
       #  run = 0
       
-    Logger(rundt, 'ScrapeSignalHistory_Core', None)
-    #scraperwiki.sqlite.execute("create table Company_Performance (`TIDM` string, `3D` real, `10D` real, `30D` real, `90D` real, `180D` real, `6mthProfit` real, `6mthProfit_Rank` integer, `StdDev` real, `StdDev_Rank` integer, `SignalAccuracy` real, `SignalAccuracy_Rank` integer, `Overall_Score` integer, `Overall_Rank` integer, `Date` date)")
-    ScrapeSignalHistory(1)
+      #Logger(rundt, 'ScrapeSignalHistory_Core', None)
+      #ScrapeSignalHistory(1)
       
-      #Logger(rundt, 'UpdateOpenTrades', None)
-      #UpdateOpenTrades()
+      Logger(rundt, 'UpdateOpenTrades', None)
+      UpdateOpenTrades()
                                  
       #Logger(rundt, 'SignalPerformance', None)                            
       #SignalPerformance()
