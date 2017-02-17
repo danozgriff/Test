@@ -733,7 +733,7 @@ def Notify(rerunflag):
       Performance_Out = "<br><br>Please close off the required trades. Here are your options for new trades:<br><br>"
     
       # New Options
-      ranklist = scraperwiki.sqlite.execute("select tidm, `3d`, `10d`, `30d`, `90d`, `180d`, `6mthProfit`, `6mthProfit_Rank`, StdDev, StdDev_Rank, SignalAccuracy, SignalAccuracy_Rank, Overall_Score, Overall_Rank from Company_Performance where `6mthProfit_Rank` < 150 and StdDev_Rank < 150 and SignalAccuracy >= .6 order by Overall_Rank")
+      ranklist = scraperwiki.sqlite.execute("select tidm, `3d`, `10d`, `30d`, `90d`, `180d`, `6mthProfit`, `6mthProfit_Rank`, StdDev, StdDev_Rank, SignalAccuracy, SignalAccuracy_Rank, Overall_Score, Overall_Rank from Company_Performance where `6mthProfit_Rank` < 150 and StdDev_Rank < 150 and SignalAccuracy >= .6 and tidm not in (select distinct tidm from Trades where CloseDate is null) order by Overall_Rank")
 
       Performance_Out = Performance_Out + "  TIDM     3D    10D    30D    90D   180D   6MthProfit   Rank    Stddev   Rank    Sig Accuracy   Rank    Overall Score   Rank<br>"
       Performance_Out = Performance_Out + "-----------------------------------------------------------------------------------------------------------------------------<br>"
@@ -809,9 +809,9 @@ if __name__ == '__main__':
     #while run == 1:
       #gvars()
       
-    scraperwiki.sqlite.execute("delete from trades")
-    Logger(rundt, 'ScrapeUserInput', None)
-    ScrapeUserInput()
+    #scraperwiki.sqlite.execute("delete from trades")
+    #Logger(rundt, 'ScrapeUserInput', None)
+    #ScrapeUserInput()
                                
       #Logger(rundt, 'ScrapeLivePrices', None)
       #rerunflag = ScrapeLivePrices(rerunflag)
@@ -824,11 +824,11 @@ if __name__ == '__main__':
     Logger(rundt, 'UpdateOpenTrades', None)
     UpdateOpenTrades()
                                  
-      #Logger(rundt, 'SignalPerformance', None)                            
-      #SignalPerformance()
+    Logger(rundt, 'SignalPerformance', None)                            
+    SignalPerformance()
                                  
-      #Logger(rundt, 'Notify', None)
-      #Notify(rerunflag)
+    Logger(rundt, 'Notify', None)
+    Notify(rerunflag)
                                  
       #Logger(rundt, 'ScrapeSignalHistory_Ext', None)
       #ScrapeSignalHistory(2)
