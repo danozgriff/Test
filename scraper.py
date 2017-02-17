@@ -731,7 +731,7 @@ def Notify(rerunflag):
     
     #if closecnt > 0:
       
-      Performance_Out = "<br><br>Please close off the required trades. Here are your options for new trades:<br><br>"
+      Performance_Out = Performance_Out + "<br><br>Please close off the required trades. Here are your options for new trades:<br><br>"
     
       # New Options
       ranklist = scraperwiki.sqlite.execute("select tidm, `3d`, `10d`, `30d`, `90d`, `180d`, `6mthProfit`, `6mthProfit_Rank`, StdDev, StdDev_Rank, SignalAccuracy, SignalAccuracy_Rank, Overall_Score, Overall_Rank from Company_Performance where `6mthProfit_Rank` < 150 and StdDev_Rank < 150 and SignalAccuracy >= .6 and tidm not in (select distinct tidm from Trades where CloseDate is null) order by Overall_Rank")
