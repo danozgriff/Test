@@ -265,7 +265,7 @@ def UpdateOpenTrades():
               scraperwiki.sqlite.execute("update Trades set LastPrice = '%f', LastDate = '%s', LastChange = '%f' where tidm = '%s'" % (currprice, currdate, lastchange, tidm))
             else:
               print "in Second"
-              print "currprice: %f, currdate: %s, lastchange: %f, currsignal: %s, currsignaldate: %s, tidm: %s"  % (currprice, currdate, lastchange, currsignal, currsignaldate, tidm)
+              #print "currprice: %f, currdate: %s, lastchange: %f, currsignal: %s, currsignaldate: %s, tidm: %s"  % (currprice, currdate, lastchange, currsignal, currsignaldate, tidm)
               scraperwiki.sqlite.execute("update Trades set LastPrice = '%f', LastDate = '%s', LastChange = '%f', LastSignal = '%s', LastSignalDate = '%s' where tidm = '%s'" % (currprice, currdate, lastchange, currsignal, currsignaldate, tidm))
               if ((opensignal=='BUY' or opensignal=='STAY LONG') and (currsignal=='SELL' or opensignal=='SHORT' or currsignal=='STAY SHORT' or currsignal=='STAY SHORT' or currsignal=='STAY IN CASH')) or ((opensignal=='SELL' or opensignal=='SHORT' or opensignal=='STAY SHORT' or opensignal=='STAY SHORT' or opensignal=='STAY IN CASH') and (currsignal=='BUY' or currsignal=='STAY LONG')):
                 print "In third"
@@ -273,10 +273,11 @@ def UpdateOpenTrades():
 
             scraperwiki.sqlite.commit()
 
-            currprice = None 
-            currdate = None
             currsignal = None
             currsignaldate = None
+            
+        currprice = None 
+        currdate = None
     
             #elif direction=='SELL':
              #   scraperwiki.sqlite.execute("update Trades set Position = 'Closing' where tidm = '%s'") % (tidm)
