@@ -496,7 +496,8 @@ def ScrapeUserInput():
         if cnt==2:
           tidm=test3.pop(0).strip()
         if cnt==3:
-          OpenDate=test3.pop(0).strip()
+          OpenDate=datetime.datetime.strptime(test3.pop(0).strip(), "%Y-%m-%d")
+          OpenDate=tdate.strftime("%Y-%m-%d") 
         if cnt==4:
           OpenSignal=test3.pop(0).strip().upper()
         if cnt==5:
@@ -804,8 +805,9 @@ if __name__ == '__main__':
     #while run == 1:
       #gvars()
       
-      #Logger(rundt, 'ScrapeUserInput', None)
-      #ScrapeUserInput()
+    scraperwiki.sqlite.execute("delete from trades")
+    Logger(rundt, 'ScrapeUserInput', None)
+    ScrapeUserInput()
                                
       #Logger(rundt, 'ScrapeLivePrices', None)
       #rerunflag = ScrapeLivePrices(rerunflag)
