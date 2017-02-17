@@ -264,7 +264,7 @@ def UpdateOpenTrades():
         else:
           print "in Second"  
           scraperwiki.sqlite.execute("update Trades set LastPrice = '%f', LastDate = '%s', LastChange = '%f', LastSignal = '%s', LastSignalDate = '%s' where tidm = '%s'" % (currprice, currdate, lastchange, currsignal, currsignaldate, tidm))
-          if tidm==currtidm and opensignal!=currsignal:
+          if ((opensignal=='BUY' or opensignal=='STAY LONG') and (currsignal=='SELL' or opensignal=='SHORT' or currsignal=='STAY SHORT' or currsignal=='STAY SHORT' or currsignal=='STAY IN CASH')) or ((opensignal=='SELL' or opensignal=='SHORT' or opensignal=='STAY SHORT' or opensignal=='STAY SHORT' or opensignal=='STAY IN CASH') and (currsignal=='BUY' or currsignal=='STAY LONG')):
             print "In third"
             scraperwiki.sqlite.execute("update Trades set Position = 'Closing' where tidm = '%s'" % (tidm))
         
