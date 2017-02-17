@@ -247,7 +247,7 @@ def UpdateOpenTrades():
         else:  
           lastchange = round((openprice - currprice) / openprice,3)
 
-        siglist = scraperwiki.sqlite.execute("select `TIDM`, `Date`, `Signal` from Signal_History where tidm = '%s' and Date > '%s' order by Date)" % (tidm, opendate))
+        siglist = scraperwiki.sqlite.execute("select `TIDM`, `Date`, `Signal` from Signal_History where tidm = '%s' and Date > '%s' order by Date" % (tidm, opendate))
         
         for y in siglist["data"]:
             currtidm = y[0]
