@@ -536,9 +536,10 @@ def SignalPerformance():
    complist = scraperwiki.sqlite.execute("select `TIDM`, `Yesterday Price`, `Date` from company where TIDM in (select distinct TIDM from Signal_History)")
    #complist = scraperwiki.sqlite.execute("select `TIDM`, `Yesterday Price`, `Date` from company where tidm = 'III.L'")
 
-   scraperwiki.sqlite.execute("drop table if exists Company_Performance")   
-   scraperwiki.sqlite.execute("create table Company_Performance (`TIDM` string, `3D` real, `10D` real, `30D` real, `90D` real, `180D` real, `6mthProfit` real, `6mthProfit_Rank` integer, `StdDev` real, `StdDev_Rank` integer, `SignalAccuracy` real, `SignalAccuracy_Rank` integer, `Overall_Score` integer, `Overall_Rank` integer, `Date` date)")
-
+   #scraperwiki.sqlite.execute("drop table if exists Company_Performance")   
+   #scraperwiki.sqlite.execute("create table Company_Performance (`TIDM` string, `3D` real, `10D` real, `30D` real, `90D` real, `180D` real, `6mthProfit` real, `6mthProfit_Rank` integer, `StdDev` real, `StdDev_Rank` integer, `SignalAccuracy` real, `SignalAccuracy_Rank` integer, `Overall_Score` integer, `Overall_Rank` integer, `Date` date)")
+   scraperwiki.sqlite.execute("delete from Company_Performance") 
+    
    for x in complist["data"]:
        tidm=x[0]
        #print tidm
@@ -823,7 +824,8 @@ if __name__ == '__main__':
       
     Logger(rundt, 'UpdateOpenTrades', None)
     UpdateOpenTrades()
-                                 
+     
+    scraperwiki.sqlite.execute("create table tmptbl_rank (`TIDM` string, `Rank` integer)")    
     Logger(rundt, 'SignalPerformance', None)                            
     SignalPerformance()
                                  
