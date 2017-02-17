@@ -774,7 +774,7 @@ def Notify(rerunflag):
       server.sendmail(cGFyc3vdcmF, cPFyc4dvcvF, text)
       server.quit()
 
-    return;
+  return;
 
 #-----------------------------#
 #-----------------------------#
