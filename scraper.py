@@ -230,7 +230,7 @@ def UpdateOpenTrades():
         openprice = x[2]
         opensignal = x[3]
 
-        #print "tidm: %s open price %f open signal: %s" % (tidm, openprice, opensignal)
+        print "open tidm: %s open price %f open signal: %s" % (tidm, openprice, opensignal)
         #print "tidm length: %d" % len(tidm)
 
         siglist = scraperwiki.sqlite.execute("select `TIDM`, `Date`, `Signal` from Signal_History where tidm = '%s' and Date in (select max(`Date`) from Signal_History where tidm = '%s')" % (tidm, tidm))
@@ -242,13 +242,15 @@ def UpdateOpenTrades():
 
             #if currdate > opendate: 
 
-        #print "tidm: %s current date: %s current signal: %s" % (currtidm, currsignaldate, currsignal)
+        print "open tidm: %s current date: %s current signal: %s" % (currtidm, currsignaldate, currsignal)
        
         currprices = scraperwiki.sqlite.execute("select `Yesterday Price`, `Date` from Company where tidm = '%s'" % (tidm))
         
         for z in currprices["data"]:
             currprice = z[0]
             currdate = datetime.datetime.strptime(z[1], "%Y-%m-%d").date()
+            
+        print "live tidm: %s live date: %s live price: %s" % (currtidm, currdate, currprice)
             
         if (opensignal=='BUY' or opensignal=='STAY LONG'): #and (currsignal=='SELL' or opensignal=='SHORT' or currsignal=='STAY SHORT' or currsignal=='STAY SHORT' or currsignal=='STAY IN CASH'):
           lastchange = round((currprice - openprice) / openprice,3)
