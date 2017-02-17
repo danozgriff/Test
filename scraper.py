@@ -497,7 +497,7 @@ def ScrapeUserInput():
           tidm=test3.pop(0).strip()
         if cnt==3:
           OpenDate=datetime.datetime.strptime(test3.pop(0).strip(), "%d/%m/%y")
-          OpenDate=tdate.strftime("%Y-%m-%d") 
+          OpenDate=OpenDate.strftime("%Y-%m-%d") 
         if cnt==4:
           OpenSignal=test3.pop(0).strip().upper()
         if cnt==5:
