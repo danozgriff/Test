@@ -259,10 +259,13 @@ def UpdateOpenTrades():
           lastchange = round((openprice - currprice) / openprice,3)
         
         if currsignaldate <= opendate:
+          print "In FIRST"
           scraperwiki.sqlite.execute("update Trades set LastPrice = '%f', LastDate = '%s', LastChange = '%f' where tidm = '%s'" % (currprice, currdate, lastchange, tidm))
         else:
+          print "in Second"  
           scraperwiki.sqlite.execute("update Trades set LastPrice = '%f', LastDate = '%s', LastChange = '%f', LastSignal = '%s', LastSignalDate = '%s' where tidm = '%s'" % (currprice, currdate, lastchange, currsignal, currsignaldate, tidm))
           if tidm==currtidm and opensignal!=currsignal:
+            print "In third"
             scraperwiki.sqlite.execute("update Trades set Position = 'Closing' where tidm = '%s'" % (tidm))
         
         scraperwiki.sqlite.commit()
