@@ -701,7 +701,7 @@ def SignalPerformance():
 #-----------------------------#
 def Notify(rerunflag):
 
-    if rerunflag == 0:  
+  if rerunflag == 0:  
     
       openlist = scraperwiki.sqlite.execute("select TXID, TIDM, OpenDate, OpenSignal, OpenPrice, Stake, LastDate, LastPrice, LastChange, LastSignal, LastSignalDate, Position, CloseDate, CloseSignal, ClosePrice, Earnings from Trades where CloseDate is null")
 
@@ -758,21 +758,21 @@ def Notify(rerunflag):
 
     
 
-    msg = MIMEMultipart()
-    msg['From'] = cGFyc3vdcmF
-    msg['To'] = cPFyc4dvcvF
-    msg['Subject'] = "List"
+      msg = MIMEMultipart()
+      msg['From'] = cGFyc3vdcmF
+      msg['To'] = cPFyc4dvcvF
+      msg['Subject'] = "List"
 
-    body = "<pre><font face='Consolas'>" + Performance_Out + "</font></pre>"
+      body = "<pre><font face='Consolas'>" + Performance_Out + "</font></pre>"
 
-    msg.attach(MIMEText(body, 'html'))
+      msg.attach(MIMEText(body, 'html'))
  
-    server = smtplib.SMTP(cGFdc2evcmQ, 587)
-    server.starttls()
-    server.login(cGFyc3vdcmF, cGFzc3dvcmQ)
-    text = msg.as_string()
-    server.sendmail(cGFyc3vdcmF, cPFyc4dvcvF, text)
-    server.quit()
+      server = smtplib.SMTP(cGFdc2evcmQ, 587)
+      server.starttls()
+      server.login(cGFyc3vdcmF, cGFzc3dvcmQ)
+      text = msg.as_string()
+      server.sendmail(cGFyc3vdcmF, cPFyc4dvcvF, text)
+      server.quit()
 
     return;
 
