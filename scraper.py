@@ -769,7 +769,7 @@ def Notify(rerunflag):
 #-----------------------------#
 def Logger(rundt, fname, status):
     
-    scraperwiki.sqlite.execute("create table RunLog (`Rundate` date, `RunDateTime` date, `Proc` string, `status` string)") 
+    #scraperwiki.sqlite.execute("create table RunLog (`Rundate` date, `RunDateTime` date, `Proc` string, `status` string)") 
     
     if status == 'Starting':
       scraperwiki.sqlite.execute("insert into RunLog values (?,?,?,?)", [rundt.date(), rundt, fname, status])
