@@ -226,7 +226,7 @@ def UpdateOpenTrades():
     for x in openlist["data"]:
         
         tidm = x[0]
-        opendate = datetime.datetime.strptime(x[1], "%d/%m/%y").date()
+        opendate = datetime.datetime.strptime(x[1], "%Y-%m-%d").date()
         openprice = x[2]
         opensignal = x[3]
 
