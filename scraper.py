@@ -246,6 +246,8 @@ def UpdateOpenTrades():
         #elif (opensignal=='SELL' or opensignal=='SHORT' or opensignal=='STAY SHORT' or opensignal=='STAY SHORT' or opensignal=='STAY IN CASH') and (currsignal=='BUY' or currsignal=='STAY LONG'):
         else:  
           lastchange = round((openprice - currprice) / openprice,3)
+        
+        print "lastchange: %f" % (lastchange)
 
         siglist = scraperwiki.sqlite.execute("select `TIDM`, `Date`, `Signal` from Signal_History where tidm = '%s' and Date > '%s' order by Date" % (tidm, opendate))
         
