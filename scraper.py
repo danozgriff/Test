@@ -797,9 +797,6 @@ def Logger(rundt, fname, status):
 # MAIN
 ########################################################
 if __name__ == '__main__':
-    
-    #
-
 
     run = 1
     rerunflag = 0                        
@@ -807,42 +804,35 @@ if __name__ == '__main__':
 
     Logger(rundt, 'Main', 'Starting')
                                
-    #while run == 1:
-    gvars()
+    while run == 1:
+      gvars()
       
-    #scraperwiki.sqlite.execute("delete from trades")
-    #Logger(rundt, 'ScrapeUserInput', None)
-    #ScrapeUserInput()
+      Logger(rundt, 'ScrapeUserInput', None)
+      ScrapeUserInput()
                                
-      #Logger(rundt, 'ScrapeLivePrices', None)
-      #rerunflag = ScrapeLivePrices(rerunflag)
-      #if rerunflag = 0:
-      #  run = 0
+      Logger(rundt, 'ScrapeLivePrices', None)
+      rerunflag = ScrapeLivePrices(rerunflag)
+      if rerunflag == 0:
+        run = 0
       
-      #Logger(rundt, 'ScrapeSignalHistory_Core', None)
-      #ScrapeSignalHistory(1)
+      Logger(rundt, 'ScrapeSignalHistory_Core', None)
+      ScrapeSignalHistory(1)
       
-    Logger(rundt, 'UpdateOpenTrades', None)
-    UpdateOpenTrades()
-     
-    scraperwiki.sqlite.execute("create table tmptbl_rank (`TIDM` string, `Rank` integer)")    
-    Logger(rundt, 'SignalPerformance', None)                            
-    SignalPerformance()
-                                 
-    Logger(rundt, 'Notify', None)
-    Notify(rerunflag)
-                                 
-      #Logger(rundt, 'ScrapeSignalHistory_Ext', None)
-      #ScrapeSignalHistory(2)
-                      
-      #Logger(rundt, 'Main', 'Complete')
+      Logger(rundt, 'UpdateOpenTrades', None)
+      UpdateOpenTrades()
+   
+      Logger(rundt, 'SignalPerformance', None)                            
+      SignalPerformance()
 
-      
-      #ScrapeBritishMain()
-      
-      #NewLivePrices()
-      #SignalPerformance()
-      #Notify(rerunflag)
+      Logger(rundt, 'Notify', None)
+      Notify(rerunflag)
+                                 
+      Logger(rundt, 'ScrapeSignalHistory_Ext', None)
+      ScrapeSignalHistory(2)
+                      
+    Logger(rundt, 'Main', 'Complete')
+
+ 
 
     #`6mthProfit` real, `6mthProfit_Rank` integer, `StdDev` real, `StdDev_Rank` integer, `SignalAccuracy`
     #scraperwiki.sqlite.execute("create table tmptbl_rank (`TIDM` string, `Rank` integer)")
