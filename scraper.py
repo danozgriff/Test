@@ -423,12 +423,12 @@ def signal_accuracy(tidm, d1date, todaydate):
     #num_items = len(complist["data"])
 
     #accuracy = signalscore / num_items
-    if signalscore == 0:
+    if signalscore == 0 or signalscore == None:
       accuracy = 0.0
     else:
-      print ("tidm: %s" % (tidm))
-      print ("SignalScore: %i" % (signalscore))
-      print ("num_items: %i" % (num_items))  
+      #print ("tidm: %s" % (tidm))
+      #print ("SignalScore: %i" % (signalscore))
+      #print ("num_items: %i" % (num_items))  
       accuracy = float(signalscore) / num_items
 
     #if tidm == "III.L":
