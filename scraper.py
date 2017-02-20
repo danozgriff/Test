@@ -412,9 +412,9 @@ def signal_accuracy(tidm, d1date, todaydate):
     
     #signalscore = 0
 
-      for x in complist["data"]:
-        signalscore = x[0]
-        num_items = x[1]
+    for x in complist["data"]:
+      signalscore = x[0]
+      num_items = x[1]
 
     #for x in complist["data"]:
     #  if x[0] = 'Y' 
