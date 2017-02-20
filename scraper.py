@@ -42,11 +42,11 @@ def ScrapeLivePrices(rerunflag):
 
     if todaydate > tdate:
              
-      now = datetime.datetime.utcnow()
+      dtnow = datetime.datetime.utcnow()
       #print now
-      ftseopen = now.replace(hour=8, minute=1, second=0, microsecond=0)
-      ftseclosed = now.replace(hour=16, minute=31, second=0, microsecond=0)
-      timetilclose = (ftseclosed - now).seconds + 5
+      ftseopen = dtnow.replace(hour=8, minute=1, second=0, microsecond=0)
+      ftseclosed = dtnow.replace(hour=16, minute=31, second=0, microsecond=0)
+      timetilclose = (ftseclosed - now).total_seconds()
     
       if rerunflag == 1:
         time.sleep(timetilclose + 5)
@@ -404,10 +404,10 @@ def ScrapeSignalHistory(runno):
 ########################################################
 
  
-def signal_accuracy(tidm):
+def signal_accuracy(tidm, d1date, todaydate)::
     """Calculates the signal accuracy for Signal History from British Bulls"""
 
-    complist = scraperwiki.sqlite.execute("select Sum(case `Confirmation` when 'Y' then 1 Else 0 end), Count(*) from Signal_History where tidm = '%s' LIMIT 10" % (tidm))
+    complist = scraperwiki.sqlite.execute("select Sum(case `Confirmation` when 'Y' then 1 Else 0 end), Count(*) from Signal_History where tidm = '%s' and date between '%s' and '%s'" % (tidm, d1date, todaydate))
     
     #signalscore = 0
 
@@ -424,10 +424,10 @@ def signal_accuracy(tidm):
     #accuracy = signalscore / num_items
     accuracy = float(signalscore) / num_items
 
-    if tidm == "III.L":
-      print ("Accuracy: %f" % (accuracy))
-      print ("SignalScore: %i" % (signalscore))
-      print ("num_items: %i" % (num_items))
+    #if tidm == "III.L":
+    #  print ("Accuracy: %f" % (accuracy))
+    #  print ("SignalScore: %i" % (signalscore))
+    #  print ("num_items: %i" % (num_items))
 
     return accuracy
 
@@ -436,10 +436,11 @@ def signal_accuracy(tidm):
 ########################################################
 
  
-def standard_deviation(tidm):
+def standard_deviation(tidm, d1date, todaydate):
     """Calculates the standard deviation for a list of numbers."""
 
-    complist = scraperwiki.sqlite.execute("select `Price` from Signal_History where tidm = '%s'" % (tidm))
+    complist = scraperwiki.sqlite.execute("select `Price` from Signal_History where tidm = '%s' and date between '%s' and '%s'" % (tidm, d1date, todaydate))
+     
     
     lst = []
 
@@ -455,9 +456,13 @@ def standard_deviation(tidm):
     ssd = sum(sq_differences)
  
     #print('This is SAMPLE standard deviation.')
-    print "tidm: %s  numitems: %d  ssd: %f" % (tidm, num_items, ssd)
-    variance = ssd / (num_items - 1)
-    sd = sqrt(variance)
+    #print "tidm: %s  numitems: %d  ssd: %f" % (tidm, num_items, ssd)
+    
+    if num_items > 1
+      variance = ssd / (num_items - 1)
+      sd = sqrt(variance)
+    else:
+      sd = 0
     # You could `return sd` here.
 
     return sd
@@ -665,8 +670,8 @@ def SignalPerformance():
                    
            D1PC = (tprice - CalcPrice) / CalcPrice
 
-           stddev = standard_deviation(tidm)
-           sigacc = signal_accuracy(tidm)
+           stddev = standard_deviation(tidm, todaydate, d1date)
+           sigacc = signal_accuracy(tidm, todaydate, d1date)
 
            #print "MaxPrice: %f" , (MaxPrice)
            #print "MixPrice: %f" , (MinPrice)
@@ -752,7 +757,7 @@ def Notify(rerunflag, rundt):
       Performance_Out = Performance_Out + "<br><br>Please close off the required trades. Here are your options for new trades:<br><br>"
     
       # New Options
-      ranklist = scraperwiki.sqlite.execute("select tidm, `3d`, `10d`, `30d`, `90d`, `180d`, `6mthProfit`, `6mthProfit_Rank`, StdDev, StdDev_Rank, SignalAccuracy, SignalAccuracy_Rank, Overall_Score, Overall_Rank from Company_Performance where `6mthProfit_Rank` < 150 and StdDev_Rank < 150 and SignalAccuracy >= .6 and tidm not in (select distinct tidm from Trades where CloseDate is null) order by Overall_Rank LIMIT 20")
+      ranklist = scraperwiki.sqlite.execute("select tidm, `3d`, `10d`, `30d`, `90d`, `180d`, `6mthProfit`, `6mthProfit_Rank`, StdDev, StdDev_Rank, SignalAccuracy, SignalAccuracy_Rank, Overall_Score, Overall_Rank from Company_Performance where `6mthProfit_Rank` < 150 and StdDev_Rank < 150 and SignalAccuracy >= .6 and tidm not in (select distinct tidm from Trades where CloseDate is null) and tidm not in (select distinct tidm from (select tidm, count(*) from Signal_History group by tidm having count(*) < 10)) order by Overall_Rank LIMIT 20")
 
       Performance_Out = Performance_Out + "  TIDM     3D    10D    30D    90D   180D   6MthProfit   Rank    Stddev   Rank    Sig Accuracy   Rank    Overall Score   Rank<br>"
       Performance_Out = Performance_Out + "-----------------------------------------------------------------------------------------------------------------------------<br>"
