@@ -412,9 +412,9 @@ def signal_accuracy(tidm, d1date, todaydate):
     
     #signalscore = 0
 
-    for x in complist["data"]:
-      signalscore = x[0]
-      num_items = x[1]
+      for x in complist["data"]:
+        signalscore = x[0]
+        num_items = x[1]
 
     #for x in complist["data"]:
     #  if x[0] = 'Y' 
@@ -423,7 +423,10 @@ def signal_accuracy(tidm, d1date, todaydate):
     #num_items = len(complist["data"])
 
     #accuracy = signalscore / num_items
-    accuracy = float(signalscore) / num_items
+    if signalscore == 0:
+      accuracy = 0
+    else:
+      accuracy = float(signalscore) / num_items
 
     #if tidm == "III.L":
     #  print ("Accuracy: %f" % (accuracy))
@@ -442,16 +445,16 @@ def standard_deviation(tidm, d1date, todaydate):
 
     complist = scraperwiki.sqlite.execute("select `Price` from Signal_History where tidm = '%s' and date between '%s' and '%s'" % (tidm, d1date, todaydate))
      
-    num_items = len(complist)
+    lstlength = len(complist)
     
-    if num_items > 1:
+    if lstlength > 1:
     
       lst = []
 
       for x in complist["data"]:
         lst.append(x[0])
     
-      mean = sum(lst) / num_items
+      mean = sum(lst) / lstlength
       differences = [y - mean for y in lst]
       sq_differences = [d ** 2 for d in differences]
       ssd = sum(sq_differences)
@@ -460,7 +463,7 @@ def standard_deviation(tidm, d1date, todaydate):
       #print "tidm: %s  numitems: %d  ssd: %f" % (tidm, num_items, ssd)
     
     
-      variance = ssd / (num_items - 1)
+      variance = ssd / (lstlength - 1)
       sd = sqrt(variance)
     else:
       sd = 0
