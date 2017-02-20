@@ -405,7 +405,7 @@ def ScrapeSignalHistory(runno):
 ########################################################
 
  
-def signal_accuracy(tidm, d1date, todaydate):
+def signal_accuracy(c, d1date, todaydate):
     """Calculates the signal accuracy for Signal History from British Bulls"""
 
     complist = scraperwiki.sqlite.execute("select Sum(case `Confirmation` when 'Y' then 1 Else 0 end), Count(*) from Signal_History where tidm = '%s' and date between '%s' and '%s'" % (tidm, d1date, todaydate))
@@ -424,8 +424,11 @@ def signal_accuracy(tidm, d1date, todaydate):
 
     #accuracy = signalscore / num_items
     if signalscore == 0:
-      accuracy = 0
+      accuracy = 0.0
     else:
+      print ("tidm: %s" % (tidm))
+      print ("SignalScore: %i" % (signalscore))
+      print ("num_items: %i" % (num_items))  
       accuracy = float(signalscore) / num_items
 
     #if tidm == "III.L":
