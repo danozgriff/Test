@@ -320,7 +320,7 @@ def ScrapeSignalHistory(runno):
         lselist = scraperwiki.sqlite.execute(CoreSQL)
     elif runno == 2:
       if weekday == 0:
-        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('Z') and tidm not in ('%s')" % (CoreSQL))
+        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M') and tidm not in ('%s')" % (CoreSQL))
       elif weekday == 1:
         lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('B', 'I', 'P', 'W') and tidm not in ('%s')" % (CoreSQL))        
       elif weekday == 2:
@@ -820,33 +820,33 @@ if __name__ == '__main__':
     rundt = datetime.datetime.utcnow()
 
     ### DEBUG  ###
-    scraperwiki.sqlite.execute("delete from RunLog")
+    #scraperwiki.sqlite.execute("delete from RunLog")
     
     Logger(rundt, 'Main', 'Starting')
                                
     while run == 1:
       gvars()
       
-      Logger(rundt, 'ScrapeUserInput', None)
-      ScrapeUserInput()
+      #Logger(rundt, 'ScrapeUserInput', None)
+      #ScrapeUserInput()
                                
-      Logger(rundt, 'ScrapeLivePrices', None)
-      rerunflag = ScrapeLivePrices(rerunflag)
-      print "rerunflag: %d" % (rerunflag)
+      #Logger(rundt, 'ScrapeLivePrices', None)
+      #rerunflag = ScrapeLivePrices(rerunflag)
+      #print "rerunflag: %d" % (rerunflag)
       if rerunflag == 0:
         run = 0
       
-      Logger(rundt, 'ScrapeSignalHistory_Core', None)
-      ScrapeSignalHistory(1)
+      #Logger(rundt, 'ScrapeSignalHistory_Core', None)
+      #ScrapeSignalHistory(1)
       
-      Logger(rundt, 'UpdateOpenTrades', None)
-      UpdateOpenTrades()
+      #Logger(rundt, 'UpdateOpenTrades', None)
+      #UpdateOpenTrades()
    
-      Logger(rundt, 'SignalPerformance', None)                            
-      SignalPerformance()
+      #Logger(rundt, 'SignalPerformance', None)                            
+      #SignalPerformance()
 
-      Logger(rundt, 'Notify', None)
-      Notify(rerunflag)
+      #Logger(rundt, 'Notify', None)
+      #Notify(rerunflag)
                                  
       Logger(rundt, 'ScrapeSignalHistory_Ext', None)
       ScrapeSignalHistory(2)
