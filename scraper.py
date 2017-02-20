@@ -230,7 +230,7 @@ def UpdateOpenTrades():
         openprice = x[2]
         opensignal = x[3]
 
-        print "open tidm: %s open price %f open signal: %s" % (tidm, openprice, opensignal)
+        #print "open tidm: %s open price %f open signal: %s" % (tidm, openprice, opensignal)
         #print "tidm length: %d" % len(tidm)
         
         currprices = scraperwiki.sqlite.execute("select `Yesterday Price`, `Date` from Company where tidm = '%s'" % (tidm))
@@ -247,7 +247,7 @@ def UpdateOpenTrades():
         else:  
           lastchange = round((openprice - currprice) / openprice,3)
         
-        print "lastchange: %f" % (lastchange)
+        #print "lastchange: %f" % (lastchange)
 
         siglist = scraperwiki.sqlite.execute("select `TIDM`, `Date`, `Signal` from Signal_History where tidm = '%s' and Date > '%s' order by Date" % (tidm, opendate))
         
@@ -261,14 +261,14 @@ def UpdateOpenTrades():
             print "open tidm: %s current date: %s current signal: %s" % (currtidm, currsignaldate, currsignal)
 
             if currsignaldate <= opendate:
-              print "In FIRST"
+              #print "In FIRST"
               scraperwiki.sqlite.execute("update Trades set LastPrice = '%f', LastDate = '%s', LastChange = '%f' where tidm = '%s'" % (currprice, currdate, lastchange, tidm))
             else:
-              print "in Second"
+              #print "in Second"
               #print "currprice: %f, currdate: %s, lastchange: %f, currsignal: %s, currsignaldate: %s, tidm: %s"  % (currprice, currdate, lastchange, currsignal, currsignaldate, tidm)
               scraperwiki.sqlite.execute("update Trades set LastPrice = '%f', LastDate = '%s', LastChange = '%f', LastSignal = '%s', LastSignalDate = '%s', Position = NULL where tidm = '%s'" % (currprice, currdate, lastchange, currsignal, currsignaldate, tidm))
               if ((opensignal=='BUY' or opensignal=='STAY LONG') and (currsignal=='SELL' or opensignal=='SHORT' or currsignal=='STAY SHORT' or currsignal=='STAY SHORT' or currsignal=='STAY IN CASH')) or ((opensignal=='SELL' or opensignal=='SHORT' or opensignal=='STAY SHORT' or opensignal=='STAY SHORT' or opensignal=='STAY IN CASH') and (currsignal=='BUY' or currsignal=='STAY LONG')):
-                print "In third"
+                #print "In third"
                 scraperwiki.sqlite.execute("update Trades set Position = 'CLOSE OUT' where tidm = '%s'" % (tidm))
 
             scraperwiki.sqlite.commit()
@@ -320,7 +320,7 @@ def ScrapeSignalHistory(runno):
         lselist = scraperwiki.sqlite.execute(CoreSQL)
     elif runno == 2:
       if weekday == 0:
-        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('B') and tidm not in ('%s')" % (CoreSQL))
+        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('Z') and tidm not in ('%s')" % (CoreSQL))
       elif weekday == 1:
         lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('B', 'I', 'P', 'W') and tidm not in ('%s')" % (CoreSQL))        
       elif weekday == 2:
@@ -348,7 +348,7 @@ def ScrapeSignalHistory(runno):
         
         tidm = str(x)[3:-2]
         #tidm = str(x)
-        print tidm
+        #print tidm
         
         ##siglist = scraperwiki.sqlite.execute("select count(*) from Signal_History where tidm = '%s' and (Signal IN ('SELL',  'SHORT',  'STAY IN CASH',  'STAY SHORT') OR (Signal IN ('BUY, 'STAY LONG') AND ))" % (tidm, d1date))
 
@@ -358,10 +358,13 @@ def ScrapeSignalHistory(runno):
         br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
 
         #pause before calling the URL
-        time.sleep(random.uniform(20, 35))
+        if runno == 1:
+          time.sleep(random.uniform(3, 10))
+        elif runno == 2:
+          time.sleep(random.uniform(20, 35))    
 
         response = br.open(url + tidm)
-        debugcnt = debugcnt + 1
+        #debugcnt = debugcnt + 1
     
     #for pagenum in range(1):
         html = response.read()
@@ -392,7 +395,7 @@ def ScrapeSignalHistory(runno):
 
                 scraperwiki.sqlite.commit()
                     
-    print "debugcnt: %d" % (debugcnt)
+    #print "debugcnt: %d" % (debugcnt)
     return;
 
 
@@ -816,30 +819,34 @@ if __name__ == '__main__':
     rerunflag = 0                        
     rundt = datetime.datetime.utcnow()
 
+    ### DEBUG  ###
+    scraperwiki.sqlite.execute("delete from RunLog")
+    
     Logger(rundt, 'Main', 'Starting')
                                
     while run == 1:
       gvars()
       
-      #Logger(rundt, 'ScrapeUserInput', None)
-      #ScrapeUserInput()
+      Logger(rundt, 'ScrapeUserInput', None)
+      ScrapeUserInput()
                                
-      #Logger(rundt, 'ScrapeLivePrices', None)
-      #rerunflag = ScrapeLivePrices(rerunflag)
+      Logger(rundt, 'ScrapeLivePrices', None)
+      rerunflag = ScrapeLivePrices(rerunflag)
+      print "rerunflag: %d" % (rerunflag)
       if rerunflag == 0:
         run = 0
       
-      #Logger(rundt, 'ScrapeSignalHistory_Core', None)
-      #ScrapeSignalHistory(1)
+      Logger(rundt, 'ScrapeSignalHistory_Core', None)
+      ScrapeSignalHistory(1)
       
-      #Logger(rundt, 'UpdateOpenTrades', None)
-      #UpdateOpenTrades()
+      Logger(rundt, 'UpdateOpenTrades', None)
+      UpdateOpenTrades()
    
-      #Logger(rundt, 'SignalPerformance', None)                            
-      #SignalPerformance()
+      Logger(rundt, 'SignalPerformance', None)                            
+      SignalPerformance()
 
-      #Logger(rundt, 'Notify', None)
-      #Notify(rerunflag)
+      Logger(rundt, 'Notify', None)
+      Notify(rerunflag)
                                  
       Logger(rundt, 'ScrapeSignalHistory_Ext', None)
       ScrapeSignalHistory(2)
