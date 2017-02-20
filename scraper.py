@@ -824,11 +824,11 @@ if __name__ == '__main__':
       #Logger(rundt, 'SignalPerformance', None)                            
       #SignalPerformance()
 
-      Logger(rundt, 'Notify', None)
-      Notify(rerunflag)
+      #Logger(rundt, 'Notify', None)
+      #Notify(rerunflag)
                                  
-      #Logger(rundt, 'ScrapeSignalHistory_Ext', None)
-      #ScrapeSignalHistory(2)
+      Logger(rundt, 'ScrapeSignalHistory_Ext', None)
+      ScrapeSignalHistory(2)
                       
     Logger(rundt, 'Main', 'Complete')
 
