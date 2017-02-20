@@ -46,13 +46,14 @@ def ScrapeLivePrices(rerunflag):
       #print now
       ftseopen = dtnow.replace(hour=8, minute=1, second=0, microsecond=0)
       ftseclosed = dtnow.replace(hour=16, minute=31, second=0, microsecond=0)
-      timetilclose = (ftseclosed - now).total_seconds()
+      wkday = datetime.datetime.today().weekday()
+      timetilclose = (ftseclosed - dtnow).total_seconds()
     
       if rerunflag == 1:
         time.sleep(timetilclose + 5)
         rerunflag = 0
       
-      if now >= ftseopen and now <= ftseclosed:
+      if dtnow >= ftseopen and dtnow <= ftseclosed and wkday < 5:
          tradingopen = "Y"
          rerunflag = 1
          #print "ftse open"
