@@ -344,6 +344,7 @@ def ScrapeSignalHistory(runno):
     for x in lselist["data"]:
         
         #tidm = str(x)[3:-2]
+        tidm = str(x)
         
         ##siglist = scraperwiki.sqlite.execute("select count(*) from Signal_History where tidm = '%s' and (Signal IN ('SELL',  'SHORT',  'STAY IN CASH',  'STAY SHORT') OR (Signal IN ('BUY, 'STAY LONG') AND ))" % (tidm, d1date))
 
