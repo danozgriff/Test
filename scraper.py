@@ -320,7 +320,7 @@ def ScrapeSignalHistory(runno):
         lselist = scraperwiki.sqlite.execute(CoreSQL)
     elif runno == 2:
       if weekday == 0:
-        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('A', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M') and tidm not in ('%s')" % (CoreSQL))
+        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2') and tidm not in ('%s')" % (CoreSQL))
       elif weekday == 1:
         lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('B', 'I', 'P', 'W') and tidm not in ('%s')" % (CoreSQL))        
       elif weekday == 2:
@@ -361,7 +361,7 @@ def ScrapeSignalHistory(runno):
         if runno == 1:
           time.sleep(random.uniform(3, 10))
         elif runno == 2:
-          time.sleep(random.uniform(20, 35))    
+          time.sleep(random.uniform(25, 45))    
 
         response = br.open(url + tidm)
         #debugcnt = debugcnt + 1
@@ -716,7 +716,7 @@ def SignalPerformance():
 
 #-----------------------------#
 #-----------------------------#
-def Notify(rerunflag):
+def Notify(rerunflag, rundt):
 
   if rerunflag == 0:  
     
@@ -751,7 +751,7 @@ def Notify(rerunflag):
       Performance_Out = Performance_Out + "<br><br>Please close off the required trades. Here are your options for new trades:<br><br>"
     
       # New Options
-      ranklist = scraperwiki.sqlite.execute("select tidm, `3d`, `10d`, `30d`, `90d`, `180d`, `6mthProfit`, `6mthProfit_Rank`, StdDev, StdDev_Rank, SignalAccuracy, SignalAccuracy_Rank, Overall_Score, Overall_Rank from Company_Performance where `6mthProfit_Rank` < 150 and StdDev_Rank < 150 and SignalAccuracy >= .6 and tidm not in (select distinct tidm from Trades where CloseDate is null) order by Overall_Rank")
+      ranklist = scraperwiki.sqlite.execute("select tidm, `3d`, `10d`, `30d`, `90d`, `180d`, `6mthProfit`, `6mthProfit_Rank`, StdDev, StdDev_Rank, SignalAccuracy, SignalAccuracy_Rank, Overall_Score, Overall_Rank from Company_Performance where `6mthProfit_Rank` < 150 and StdDev_Rank < 150 and SignalAccuracy >= .6 and tidm not in (select distinct tidm from Trades where CloseDate is null) order by Overall_Rank LIMIT 20")
 
       Performance_Out = Performance_Out + "  TIDM     3D    10D    30D    90D   180D   6MthProfit   Rank    Stddev   Rank    Sig Accuracy   Rank    Overall Score   Rank<br>"
       Performance_Out = Performance_Out + "-----------------------------------------------------------------------------------------------------------------------------<br>"
@@ -846,7 +846,7 @@ if __name__ == '__main__':
       #SignalPerformance()
 
       #Logger(rundt, 'Notify', None)
-      #Notify(rerunflag)
+      #Notify(rerunflag, rundt)
                                  
       Logger(rundt, 'ScrapeSignalHistory_Ext', None)
       ScrapeSignalHistory(2)
