@@ -309,6 +309,9 @@ def ScrapeSignalHistory(runno):
     weekday = datetime.datetime.today().weekday()
     rundate = datetime.datetime.now().date()
     
+    ### DEBUGGGING ###
+    debugcnt = 0
+    
     
     #Determine how much history to scan for, based on the day of week and the run number
     # 0=Monday, 6=Sunday
@@ -317,7 +320,7 @@ def ScrapeSignalHistory(runno):
         lselist = scraperwiki.sqlite.execute(CoreSQL)
     elif runno == 2:
       if weekday == 0:
-        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('O') and tidm not in ('%s')" % (CoreSQL))
+        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('B') and tidm not in ('%s')" % (CoreSQL))
       elif weekday == 1:
         lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('B', 'I', 'P', 'W') and tidm not in ('%s')" % (CoreSQL))        
       elif weekday == 2:
@@ -358,6 +361,7 @@ def ScrapeSignalHistory(runno):
         time.sleep(random.uniform(20, 35))
 
         response = br.open(url + tidm)
+        debugcnt = debugcnt + 1
     
     #for pagenum in range(1):
         html = response.read()
@@ -373,21 +377,22 @@ def ScrapeSignalHistory(runno):
 
                 sh_Date = re.search("(\w|\d)(.*)(\w|\d)", str(test3.pop(0)).replace(" ", "")).group(0)
                 sh_Date = date(int(sh_Date[6:10]),int(sh_Date[3:5]),int(sh_Date[:2]))
-                print "Date: %s" % (sh_Date)
+                #print "Date: %s" % (sh_Date)
                 sh_Price = re.search("(\w|\d)(.*)(\w|\d)", str(test3.pop(0)).replace(" ", "").replace(",", "")).group(0)
-                print "Price: %s" % (sh_Price)
+                #print "Price: %s" % (sh_Price)
                 sh_Signal = re.search("(\w|\d)(.*)(\w|\d)", str(test3.pop(0)).replace(" ", "")).group(0)
-                print "Signal: %s" % (sh_Signal)
+                #print "Signal: %s" % (sh_Signal)
                 sh_Confirmation = ((re.search("[Uncheck|Check]", str(test3.pop(0)).replace(" ", "")).group(0).lower()).replace("u","N")).replace("c", "Y")
-                print "Confirmation: %s" % (sh_Confirmation)
+                #print "Confirmation: %s" % (sh_Confirmation)
                 sh_GBP100 = re.search("(\w|\d)(.*)(\w|\d)", str(test3.pop(0)).replace(" ", "").replace(",", "")).group(0)
-                print "GDP100: %s" % (sh_GBP100)
-                print "Rundate: %s" % rundate
+                #print "GDP100: %s" % (sh_GBP100)
+                #print "Rundate: %s" % rundate
 
                 scraperwiki.sqlite.execute("insert or ignore into Signal_History values (?, ?, ?, ?, ?, ?, ?)",  [tidm, sh_Date, sh_Price, sh_Signal, sh_Confirmation, sh_GBP100, rundate]) 
 
                 scraperwiki.sqlite.commit()
                     
+    print "debugcnt: %d" % (debugcnt)
     return;
 
 
