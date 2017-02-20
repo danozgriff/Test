@@ -442,24 +442,24 @@ def standard_deviation(tidm, d1date, todaydate):
 
     complist = scraperwiki.sqlite.execute("select `Price` from Signal_History where tidm = '%s' and date between '%s' and '%s'" % (tidm, d1date, todaydate))
      
-    
-    lst = []
-
-    for x in complist["data"]:
-      lst.append(x[0])
-
-    #print lst
-
-    num_items = len(lst)
-    mean = sum(lst) / num_items
-    differences = [y - mean for y in lst]
-    sq_differences = [d ** 2 for d in differences]
-    ssd = sum(sq_differences)
- 
-    #print('This is SAMPLE standard deviation.')
-    #print "tidm: %s  numitems: %d  ssd: %f" % (tidm, num_items, ssd)
+    num_items = len(complist)
     
     if num_items > 1:
+    
+      lst = []
+
+      for x in complist["data"]:
+        lst.append(x[0])
+    
+      mean = sum(lst) / num_items
+      differences = [y - mean for y in lst]
+      sq_differences = [d ** 2 for d in differences]
+      ssd = sum(sq_differences)
+ 
+      #print('This is SAMPLE standard deviation.')
+      #print "tidm: %s  numitems: %d  ssd: %f" % (tidm, num_items, ssd)
+    
+    
       variance = ssd / (num_items - 1)
       sd = sqrt(variance)
     else:
