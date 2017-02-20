@@ -807,28 +807,28 @@ if __name__ == '__main__':
     while run == 1:
       gvars()
       
-      Logger(rundt, 'ScrapeUserInput', None)
-      ScrapeUserInput()
+      #Logger(rundt, 'ScrapeUserInput', None)
+      #ScrapeUserInput()
                                
-      Logger(rundt, 'ScrapeLivePrices', None)
-      rerunflag = ScrapeLivePrices(rerunflag)
+      #Logger(rundt, 'ScrapeLivePrices', None)
+      #rerunflag = ScrapeLivePrices(rerunflag)
       if rerunflag == 0:
         run = 0
       
-      Logger(rundt, 'ScrapeSignalHistory_Core', None)
-      ScrapeSignalHistory(1)
+      #Logger(rundt, 'ScrapeSignalHistory_Core', None)
+      #ScrapeSignalHistory(1)
       
-      Logger(rundt, 'UpdateOpenTrades', None)
-      UpdateOpenTrades()
+      #Logger(rundt, 'UpdateOpenTrades', None)
+      #UpdateOpenTrades()
    
-      Logger(rundt, 'SignalPerformance', None)                            
-      SignalPerformance()
+      #Logger(rundt, 'SignalPerformance', None)                            
+      #SignalPerformance()
 
       Logger(rundt, 'Notify', None)
       Notify(rerunflag)
                                  
-      Logger(rundt, 'ScrapeSignalHistory_Ext', None)
-      ScrapeSignalHistory(2)
+      #Logger(rundt, 'ScrapeSignalHistory_Ext', None)
+      #ScrapeSignalHistory(2)
                       
     Logger(rundt, 'Main', 'Complete')
 
