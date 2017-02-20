@@ -458,7 +458,7 @@ def standard_deviation(tidm, d1date, todaydate):
     #print('This is SAMPLE standard deviation.')
     #print "tidm: %s  numitems: %d  ssd: %f" % (tidm, num_items, ssd)
     
-    if num_items > 1
+    if num_items > 1:
       variance = ssd / (num_items - 1)
       sd = sqrt(variance)
     else:
