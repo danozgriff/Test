@@ -50,7 +50,7 @@ def ScrapeLivePrices(rerunflag):
     timetilclose = (ftseclosed - dtnow).total_seconds()
 
     if rerunflag == 1:
-      time.sleep(timetilclose + 5)
+      time.sleep(timetilclose)
       rerunflag = 0
 
     if dtnow >= ftseopen and dtnow <= ftseclosed and wkday < 5:
