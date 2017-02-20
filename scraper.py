@@ -455,6 +455,7 @@ def standard_deviation(tidm):
     ssd = sum(sq_differences)
  
     #print('This is SAMPLE standard deviation.')
+    print "tidm: %s  numitems: %d  ssd: %f" % (tidm, num_items, ssd)
     variance = ssd / (num_items - 1)
     sd = sqrt(variance)
     # You could `return sd` here.
