@@ -44,8 +44,8 @@ def ScrapeLivePrices(rerunflag):
              
     dtnow = datetime.datetime.utcnow()
     #print now
-    ftseopen = dtnow.replace(hour=8, minute=1, second=0, microsecond=0)
-    ftseclosed = dtnow.replace(hour=16, minute=31, second=0, microsecond=0)
+    ftseopen = dtnow.replace(hour=0, minute=1, second=0, microsecond=0)
+    ftseclosed = dtnow.replace(hour=0, minute=31, second=0, microsecond=0)
     wkday = datetime.datetime.today().weekday()
     timetilclose = (ftseclosed - dtnow).total_seconds()
 
