@@ -47,7 +47,7 @@ def ScrapeLivePrices(rerunflag):
     dtnow = datetime.datetime.utcnow()
     #print now
     ftseopen = dtnow.replace(hour=0, minute=1, second=0, microsecond=0)
-    ftseclosed = dtnow.replace(hour=4, minute=35, second=0, microsecond=0)
+    ftseclosed = dtnow.replace(hour=6, minute=52, second=0, microsecond=0)
     wkday = datetime.datetime.today().weekday()
     timetilclose = (ftseclosed - dtnow).total_seconds()
 
@@ -862,11 +862,15 @@ if __name__ == '__main__':
       #Logger(rundt, 'UpdateOpenTrades', None)
       #UpdateOpenTrades()
    
-      Logger(rundt, 'SignalPerformance', None)                            
+      Logger(rundt, 'SignalPerformance', None)
+      print "Start Sig Performance"
       SignalPerformance()
+      print "Completed Sig Performance"
 
       Logger(rundt, 'Notify', None)
+      print "Start Notify"
       Notify(rerunflag, rundt)
+      print "Completed Notify"
                                  
       #Logger(rundt, 'ScrapeSignalHistory_Ext', None)
       #ScrapeSignalHistory(2)
