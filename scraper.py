@@ -836,6 +836,7 @@ if __name__ == '__main__':
     run = 1
     rerunflag = 0                        
     rundt = datetime.datetime.utcnow()
+    gvars()
 
     ### DEBUG  ###
     #scraperwiki.sqlite.execute("delete from RunLog")
@@ -843,14 +844,14 @@ if __name__ == '__main__':
     Logger(rundt, 'Main', 'Starting')
                                
     while run == 1:
-      gvars()
+      print "main start rerunflag: %d" % (rerunflag)
       
       #Logger(rundt, 'ScrapeUserInput', None)
       #ScrapeUserInput()
                                
       Logger(rundt, 'ScrapeLivePrices', None)
       rerunflag = ScrapeLivePrices(rerunflag)
-      print "main rerunflag: %d" % (rerunflag)
+      print "main mid rerunflag: %d" % (rerunflag)
       if rerunflag == 0:
         run = 0
       
@@ -868,6 +869,7 @@ if __name__ == '__main__':
                                  
       #Logger(rundt, 'ScrapeSignalHistory_Ext', None)
       #ScrapeSignalHistory(2)
+      print "main end rerunflag: %d" % (rerunflag)
                       
     Logger(rundt, 'Main', 'Complete')
 
