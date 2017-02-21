@@ -734,6 +734,8 @@ def SignalPerformance():
        scraperwiki.sqlite.execute("INSERT into tmptbl_rank (TIDM, Rank) SELECT tidm, (SELECT COUNT()+1 FROM (SELECT DISTINCT Overall_Score FROM Company_Performance AS t WHERE Overall_Score < Company_Performance.Overall_Score)) AS Rank FROM Company_Performance" )
        scraperwiki.sqlite.execute("Update Company_Performance SET Overall_Rank = (select rank from tmptbl_rank where tidm = Company_Performance.tidm)")
        scraperwiki.sqlite.commit()
+        
+  return;     
 
 #-----------------------------#
 #-----------------------------#
