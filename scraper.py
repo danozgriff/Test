@@ -23,7 +23,7 @@ def ScrapeLivePrices(rerunflag):
     #Sleep the process while day is still open
     #time.sleep(sleeptime)
     
-    print "Start rerunflag: %d" % (rerunflag)
+    #print "Start rerunflag: %d" % (rerunflag)
     
     #scraperwiki.sqlite.execute("delete from company")  
     scraperwiki.sqlite.execute("drop table if exists company")
@@ -47,28 +47,31 @@ def ScrapeLivePrices(rerunflag):
     dtnow = datetime.datetime.utcnow()
     #print now
     ftseopen = dtnow.replace(hour=0, minute=1, second=0, microsecond=0)
-    ftseclosed = dtnow.replace(hour=12, minute=46, second=0, microsecond=0)
+    ftseclosed = dtnow.replace(hour=13, minute=15, second=0, microsecond=0)
     wkday = datetime.datetime.today().weekday()
     timetilclose = (ftseclosed - dtnow).total_seconds()
     if timetilclose < 0:
         timetilclose = 0
 
     if rerunflag == 1:
-      print "timetilclose: %d" % (timetilclose)
+      #print "timetilclose: %d" % (timetilclose)
       time.sleep(timetilclose)  
       # Trading should be closed
+      print "In First"
       tradingopen = "N"
       runagainflag = 0
     elif dtnow >= ftseopen and dtnow <= ftseclosed and wkday < 5 and rerunflag==0:
        tradingopen = "Y"
        runagainflag = 1
+       print "In Second"
        #print "ftse open"
     else:
        #print "ftse closed"
        tradingopen = "N"
        runagainflag = 0
+       print "In Third"
         
-    print "mid rerunflag: %d" % (rerunflag)
+    #print "mid rerunflag: %d" % (rerunflag)
 
     ftses = ['FTSE 100', 'FTSE 250',  'FTSE Small Cap']
 
@@ -138,7 +141,7 @@ def ScrapeLivePrices(rerunflag):
         #if overallcnt > 9:
          #    return;
         #print "%s ftse records were loaded" % (count)
-    print "end rerunflag: %d" % (rerunflag)
+    #print "end rerunflag: %d" % (rerunflag)
     
     return runagainflag;
 
@@ -307,6 +310,43 @@ def FindNewTrades():
     #recommlist = scraperwiki.sqlite.execute("select `TIDM` from Company_Recommendations
     
     return;
+
+####################################################
+#Load Price History For Each Company (Called from Signal History Function)
+####################################################
+
+def ScrapePriceHistory(tidm):
+
+  #scraperwiki.sqlite.execute("create table Company_History (`TIDM` varchar2(8) NOT NULL, `Date` date NOT NULL, `Open` real NOT NULL, `High` real NOT NULL, `Low` real NOT NULL, `Close` real NOT NULL, `Volume` integer NOT NULL, UNIQUE (`TIDM`, `Date`))")
+
+  p_enddate = datetime.date.today()
+  p_startdate = p_enddate - datetime.timedelta(days=10)
+
+  csvurl = "http://chart.finance.yahoo.com/table.csv?s=%s&a=%d&b=%s&c=%s&d=%d&e=%s&f=%s&g=d&ignore=.csv" % (tidm, int(p_startdate.strftime("%-m"))-1, p_startdate.strftime("%d"), p_startdate.strftime("%Y"), int(p_enddate.strftime("%-m"))-1, p_enddate.strftime("%d"), p_enddate.strftime("%Y"))
+  
+  headercnt = 0
+
+  data = scraperwiki.scrape(csvurl)
+  reader = csv.reader(data.splitlines()) 
+
+  for row in reader:     
+    if headercnt > 0:      
+      cdate = row[0]
+      copen = float(row[1])
+      chigh = float(row[2])
+      clow = float(row[3])
+      cclose = float(row[4])
+      cvolume = row[5]
+
+      scraperwiki.sqlite.execute("insert or ignore into Company_History values (?, ?, ?, ?, ?, ?, ?)",  [tidm, cdate, copen, chigh, clow, cclose, cvolume])   
+
+    headercnt+=1
+
+  scraperwiki.sqlite.commit()
+
+  return;  
+
+
 ####################################################
 #Load Signal History from British Bulls
 ####################################################
@@ -316,6 +356,8 @@ def ScrapeSignalHistory(runno):
     #scraperwiki.sqlite.execute("drop table if exists Signal_History")  
     #scraperwiki.sqlite.execute("create table Signal_History (`TIDM` varchar2(8) NOT NULL, `Date` date NOT NULL, `Price` real NOT NULL, `Signal` varchar2(15) NOT NULL, `Confirmation` char(1) NOT NULL, `GBP 100` real NOT NULL, `Last Updated` date NOT NULL,  UNIQUE (`TIDM`, `Date`))")
     
+    scraperwiki.sqlite.execute("create table Company_History (`TIDM` varchar2(8) NOT NULL, `Date` date NOT NULL, `Open` real NOT NULL, `High` real NOT NULL, `Low` real NOT NULL, `Close` real NOT NULL, `Volume` integer NOT NULL, UNIQUE (`TIDM`, `Date`))")
+
 
     CoreSQL = "select distinct `TIDM` from Trades where CloseDate is null UNION select `tidm` from (select distinct `tidm` from Company_Performance where `6mthProfit_Rank` < 150 and StdDev_Rank < 150 and SignalAccuracy >= .6 limit 20)"
     url = 'https://www.britishbulls.com/SignalPage.aspx?lang=en&Ticker='
@@ -742,8 +784,7 @@ def SignalPerformance():
        scraperwiki.sqlite.execute("INSERT into tmptbl_rank (TIDM, Rank) SELECT tidm, (SELECT COUNT()+1 FROM (SELECT DISTINCT Overall_Score FROM Company_Performance AS t WHERE Overall_Score < Company_Performance.Overall_Score)) AS Rank FROM Company_Performance" )
        scraperwiki.sqlite.execute("Update Company_Performance SET Overall_Rank = (select rank from tmptbl_rank where tidm = Company_Performance.tidm)")
        scraperwiki.sqlite.commit()
-       
-   print "ending sig per"       
+              
         
    return;     
 
@@ -832,8 +873,6 @@ def Logger(rundt, fname, status):
     
     #scraperwiki.sqlite.execute("create table RunLog (`Rundate` date, `RunDateTime` date, `Proc` string, `status` string)") 
     
-    print "starting Logger"
-    
     if status == 'Starting':
       scraperwiki.sqlite.execute("insert into RunLog values (?,?,?,?)", [rundt.date(), rundt, fname, status])
     elif status == 'Complete':
@@ -855,6 +894,9 @@ if __name__ == '__main__':
     rundt = datetime.datetime.utcnow()
     gvars()
 
+    #scraperwiki.sqlite.execute("create table Company_History (`TIDM` varchar2(8) NOT NULL, `Date` date NOT NULL, `Open` real NOT NULL, `High` real NOT NULL, `Low` real NOT NULL, `Close` real NOT NULL, `Volume` integer NOT NULL, UNIQUE (`TIDM`, `Date`))")
+
+
     #scraperwiki.sqlite.execute("drop table if exists trades")
     #scraperwiki.sqlite.execute("create table trades (`TXID` integer PRIMARY KEY, `TIDM` string, `OpenDate` date, `OpenSignal` string, `OpenPrice` real, `Stake` string, `LastDate` date, `LastPrice` real, `LastChange` real, `LastSignal` string, `LastSignalDate` date, `Position` string, `CloseDate` Date, `CloseSignal` string, `ClosePrice` real, `Earnings` real)")
 
@@ -867,12 +909,14 @@ if __name__ == '__main__':
     while run == 1:
       print "main start rerunflag: %d" % (rerunflag)
 
+      ScrapePriceHistory('POG.L')
+
       #Logger(rundt, 'ScrapeUserInput', None)
       #ScrapeUserInput()
 
-      Logger(rundt, 'ScrapeLivePrices', None)
-      rerunflag = ScrapeLivePrices(rerunflag)
-      print "main mid rerunflag: %d" % (rerunflag)
+      #Logger(rundt, 'ScrapeLivePrices', None)
+      #rerunflag = ScrapeLivePrices(rerunflag)
+      #print "main mid rerunflag: %d" % (rerunflag)
       if rerunflag == 0:
         run = 0
 
@@ -882,24 +926,22 @@ if __name__ == '__main__':
       #Logger(rundt, 'UpdateOpenTrades', None)
       #UpdateOpenTrades()
 
-      Logger(rundt, 'SignalPerformance', None)
-      print "Start Sig Performance"
-      SignalPerformance()
-      print "Completed Sig Performance"
+      #Logger(rundt, 'SignalPerformance', None)
+      #print "Start Sig Performance"
+      #SignalPerformance()
+      #print "Completed Sig Performance"
 
-      Logger(rundt, 'Notify', None)
-      print "Start Notify"
-      Notify(rerunflag, rundt)
-      print "Completed Notify"
+      #Logger(rundt, 'Notify', None)
+      #print "Start Notify"
+      #Notify(rerunflag, rundt)
+      #print "Completed Notify"
 
       #Logger(rundt, 'ScrapeSignalHistory_Ext', None)
       #ScrapeSignalHistory(2)
+
     print "main end rerunflag: %d" % (rerunflag)
-    
-    #### SECOND RUN #####
+    Logger(rundt, 'Main', 'Complete')
 
-
- 
 
     #`6mthProfit` real, `6mthProfit_Rank` integer, `StdDev` real, `StdDev_Rank` integer, `SignalAccuracy`
     #scraperwiki.sqlite.execute("create table tmptbl_rank (`TIDM` string, `Rank` integer)")
