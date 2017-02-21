@@ -47,13 +47,15 @@ def ScrapeLivePrices(rerunflag):
     dtnow = datetime.datetime.utcnow()
     #print now
     ftseopen = dtnow.replace(hour=0, minute=1, second=0, microsecond=0)
-    ftseclosed = dtnow.replace(hour=6, minute=52, second=0, microsecond=0)
+    ftseclosed = dtnow.replace(hour=7, minute=2, second=0, microsecond=0)
     wkday = datetime.datetime.today().weekday()
     timetilclose = (ftseclosed - dtnow).total_seconds()
+    if timetilclose < 0:
+        timetilclose = 0
 
     if rerunflag == 1:
       print "timetilclose: %d" % (timetilclose)
-      time.sleep(timetilclose)
+      time.sleep(timetilclose)  
       # Trading should be closed
       tradingopen = "N"
       rerunflag = 0
@@ -88,7 +90,7 @@ def ScrapeLivePrices(rerunflag):
         #scraperwiki.sqlite.execute("delete from company")
         #scraperwiki.sqlite.commit()
 
-        response = br.open(url, timeout=120.0)
+        response = br.open(url)
 
         #for pagenum in range(1):
         html = response.read()
