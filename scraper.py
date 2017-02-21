@@ -47,7 +47,7 @@ def ScrapeLivePrices(rerunflag):
     dtnow = datetime.datetime.utcnow()
     #print now
     ftseopen = dtnow.replace(hour=0, minute=1, second=0, microsecond=0)
-    ftseclosed = dtnow.replace(hour=8, minute=28, second=0, microsecond=0)
+    ftseclosed = dtnow.replace(hour=8, minute=38, second=0, microsecond=0)
     wkday = datetime.datetime.today().weekday()
     timetilclose = (ftseclosed - dtnow).total_seconds()
     if timetilclose < 0:
@@ -209,8 +209,9 @@ def ScrapeBritishMain():
 
 def gvars():
 
-    global cGFzc3dvcmQ, cGFdc2evcmQ, cGFyc3vdcmF, cPFyc4dvcvF
+    global rerunflag, cGFzc3dvcmQ, cGFdc2evcmQ, cGFyc3vdcmF, cPFyc4dvcvF
 
+    rerunflag = 0 
     cGFzc3dvcmQ = base64.b64decode("ZnRzZXBhc3M=")
     cGFdc2evcmQ = base64.b64decode("c210cC5nbWFpbC5jb20=")
     cGFyc3vdcmF = base64.b64decode("ZGFub3pncmlmZkBnbWFpbC5jb20=")
@@ -846,7 +847,7 @@ def Logger(rundt, fname, status):
 if __name__ == '__main__':
 
     run = 1
-    rerunflag = 0                        
+    #rerunflag = 0                        
     rundt = datetime.datetime.utcnow()
     gvars()
 
