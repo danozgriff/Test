@@ -47,7 +47,7 @@ def ScrapeLivePrices(rerunflag):
     dtnow = datetime.datetime.utcnow()
     #print now
     ftseopen = dtnow.replace(hour=0, minute=1, second=0, microsecond=0)
-    ftseclosed = dtnow.replace(hour=7, minute=55, second=0, microsecond=0)
+    ftseclosed = dtnow.replace(hour=8, minute=28, second=0, microsecond=0)
     wkday = datetime.datetime.today().weekday()
     timetilclose = (ftseclosed - dtnow).total_seconds()
     if timetilclose < 0:
@@ -58,15 +58,15 @@ def ScrapeLivePrices(rerunflag):
       time.sleep(timetilclose)  
       # Trading should be closed
       tradingopen = "N"
-      rerunflag = 0
+      runagainflag = 0
     elif dtnow >= ftseopen and dtnow <= ftseclosed and wkday < 5 and rerunflag==0:
        tradingopen = "Y"
-       rerunflag = 1
+       runagainflag = 1
        #print "ftse open"
     else:
        #print "ftse closed"
        tradingopen = "N"
-       rerunflag = 0
+       runagainflag = 0
         
     print "mid rerunflag: %d" % (rerunflag)
 
@@ -140,7 +140,7 @@ def ScrapeLivePrices(rerunflag):
         #print "%s ftse records were loaded" % (count)
     print "end rerunflag: %d" % (rerunflag)
     
-    return rerunflag;
+    return runagainflag;
 
 ####################################################
 #Load Main Page from British Bulls
@@ -570,8 +570,7 @@ def ScrapeUserInput():
 ########################################################
 
 def SignalPerformance(): 
-        
-   print "SignalPerf_1"     
+           
    
    complist = scraperwiki.sqlite.execute("select `TIDM`, `Yesterday Price`, `Date` from company where TIDM in (select distinct TIDM from Signal_History)")
    #complist = scraperwiki.sqlite.execute("select `TIDM`, `Yesterday Price`, `Date` from company where tidm = 'III.L'")
@@ -590,7 +589,7 @@ def SignalPerformance():
        Commission=0.994
 
 # Find Today GDP100
-       print "SignalPerf_2" 
+
        ldata = scraperwiki.sqlite.execute("select `Price` from Signal_History where tidm = '%s' and Date = '%s'" % (tidm, tdate))
        if len(ldata["data"]) != 0:
            for c in d1mindate["data"]:
@@ -622,7 +621,7 @@ def SignalPerformance():
 
 #Calculate Performance for the various intervals   
 #-----------------------------------------------
-       print "SignalPerf_3" 
+
        timeintervals = [3, 10, 30, 90, 180];
        
        for timeint in timeintervals:
@@ -687,12 +686,12 @@ def SignalPerformance():
                    
            D1PC = (tprice - CalcPrice) / CalcPrice
 
-           print "SignalPerf_4" 
+
             
            stddev = standard_deviation(tidm, todaydate, d1date)
            sigacc = signal_accuracy(tidm, todaydate, d1date)
             
-           print "SignalPerf_5"
+
 
            #print "MaxPrice: %f" , (MaxPrice)
            #print "MixPrice: %f" , (MinPrice)
@@ -714,7 +713,7 @@ def SignalPerformance():
                scraperwiki.sqlite.execute("insert into Company_Performance values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",  [tidm, round(T3D,3), round(T10D,3), round(T30D,3), round(T90D,3), round(T180D,3), round(T180Earnings,2), 0, round(stddev,3), 0, round(sigacc,3), 0, 0, 0, tdate]) 
                scraperwiki.sqlite.commit()
        #return;
-           print "SignalPerf_6" 
+ 
 
 
 #Calculate Rankings
@@ -741,8 +740,7 @@ def SignalPerformance():
        scraperwiki.sqlite.execute("INSERT into tmptbl_rank (TIDM, Rank) SELECT tidm, (SELECT COUNT()+1 FROM (SELECT DISTINCT Overall_Score FROM Company_Performance AS t WHERE Overall_Score < Company_Performance.Overall_Score)) AS Rank FROM Company_Performance" )
        scraperwiki.sqlite.execute("Update Company_Performance SET Overall_Rank = (select rank from tmptbl_rank where tidm = Company_Performance.tidm)")
        scraperwiki.sqlite.commit()
-        
-       print "SignalPerf_7"  
+          
         
    return;     
 
