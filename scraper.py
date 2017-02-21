@@ -848,37 +848,71 @@ if __name__ == '__main__':
     
     Logger(rundt, 'Main', 'Starting')
                                
-    while run == 1:
-      print "main start rerunflag: %d" % (rerunflag)
+    #while run == 1:
+    print "main start rerunflag: %d" % (rerunflag)
+
+    #Logger(rundt, 'ScrapeUserInput', None)
+    #ScrapeUserInput()
+
+    Logger(rundt, 'ScrapeLivePrices', None)
+    rerunflag = ScrapeLivePrices(rerunflag)
+    print "main mid rerunflag: %d" % (rerunflag)
+    
+    #if rerunflag == 0:
+    #  run = 0
+
+    #Logger(rundt, 'ScrapeSignalHistory_Core', None)
+    #ScrapeSignalHistory(1)
+
+    #Logger(rundt, 'UpdateOpenTrades', None)
+    #UpdateOpenTrades()
+
+    Logger(rundt, 'SignalPerformance', None)
+    print "Start Sig Performance"
+    SignalPerformance()
+    print "Completed Sig Performance"
+
+    Logger(rundt, 'Notify', None)
+    print "Start Notify"
+    Notify(rerunflag, rundt)
+    print "Completed Notify"
+
+    #Logger(rundt, 'ScrapeSignalHistory_Ext', None)
+    #ScrapeSignalHistory(2)
+    print "main end rerunflag: %d" % (rerunflag)
+    
+    #### SECOND RUN #####
+    
+    if rerunflag == 1:
       
+      print "main2 start rerunflag: %d" % (rerunflag)    
+    
       #Logger(rundt, 'ScrapeUserInput', None)
       #ScrapeUserInput()
-                               
-      Logger(rundt, 'ScrapeLivePrices', None)
+
+      Logger(rundt, 'ScrapeLivePrices2', None)
       rerunflag = ScrapeLivePrices(rerunflag)
-      print "main mid rerunflag: %d" % (rerunflag)
-      if rerunflag == 0:
-        run = 0
-      
-      #Logger(rundt, 'ScrapeSignalHistory_Core', None)
-      #ScrapeSignalHistory(1)
-      
+      print "main2 mid rerunflag: %d" % (rerunflag)
+
+      Logger(rundt, 'ScrapeSignalHistory_Core2', None)
+      ScrapeSignalHistory(1)
+
       #Logger(rundt, 'UpdateOpenTrades', None)
       #UpdateOpenTrades()
-   
-      #Logger(rundt, 'SignalPerformance', None)
-      #print "Start Sig Performance"
-      #SignalPerformance()
-      #print "Completed Sig Performance"
 
-      Logger(rundt, 'Notify', None)
-      print "Start Notify"
+      Logger(rundt, 'SignalPerformance2', None)
+      print "Start Sig Performance2"
+      SignalPerformance()
+      print "Completed Sig Performance2"
+
+      Logger(rundt, 'Notify2', None)
+      print "Start Notify2"
       Notify(rerunflag, rundt)
-      print "Completed Notify"
-                                 
+      print "Completed Notify2"
+
       #Logger(rundt, 'ScrapeSignalHistory_Ext', None)
       #ScrapeSignalHistory(2)
-      print "main end rerunflag: %d" % (rerunflag)
+      print "main2 end rerunflag: %d" % (rerunflag)
                       
     Logger(rundt, 'Main', 'Complete')
 
