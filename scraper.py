@@ -850,7 +850,7 @@ if __name__ == '__main__':
                                
       Logger(rundt, 'ScrapeLivePrices', None)
       rerunflag = ScrapeLivePrices(rerunflag)
-      #print "rerunflag: %d" % (rerunflag)
+      print "main rerunflag: %d" % (rerunflag)
       if rerunflag == 0:
         run = 0
       
