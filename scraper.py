@@ -47,7 +47,7 @@ def ScrapeLivePrices(rerunflag):
     dtnow = datetime.datetime.utcnow()
     #print now
     ftseopen = dtnow.replace(hour=0, minute=1, second=0, microsecond=0)
-    ftseclosed = dtnow.replace(hour=8, minute=44, second=0, microsecond=0)
+    ftseclosed = dtnow.replace(hour=11, minute=49, second=0, microsecond=0)
     wkday = datetime.datetime.today().weekday()
     timetilclose = (ftseclosed - dtnow).total_seconds()
     if timetilclose < 0:
@@ -209,9 +209,8 @@ def ScrapeBritishMain():
 
 def gvars():
 
-    global rerunflag, cGFzc3dvcmQ, cGFdc2evcmQ, cGFyc3vdcmF, cPFyc4dvcvF
+    global cGFzc3dvcmQ, cGFdc2evcmQ, cGFyc3vdcmF, cPFyc4dvcvF
 
-    rerunflag = 0 
     cGFzc3dvcmQ = base64.b64decode("ZnRzZXBhc3M=")
     cGFdc2evcmQ = base64.b64decode("c210cC5nbWFpbC5jb20=")
     cGFyc3vdcmF = base64.b64decode("ZGFub3pncmlmZkBnbWFpbC5jb20=")
@@ -314,6 +313,10 @@ def FindNewTrades():
 
 def ScrapeSignalHistory(runno):
     
+    #scraperwiki.sqlite.execute("drop table if exists Signal_History")  
+    #scraperwiki.sqlite.execute("create table Signal_History (`TIDM` varchar2(8) NOT NULL, `Date` date NOT NULL, `Price` real NOT NULL, `Signal` varchar2(15) NOT NULL, `Confirmation` char(1) NOT NULL, `GBP 100` real NOT NULL, `Last Updated` date NOT NULL,  UNIQUE (`TIDM`, `Date`))")
+    
+
     CoreSQL = "select distinct `TIDM` from Trades where CloseDate is null UNION select `tidm` from (select distinct `tidm` from Company_Performance where `6mthProfit_Rank` < 150 and StdDev_Rank < 150 and SignalAccuracy >= .6 limit 20)"
     url = 'https://www.britishbulls.com/SignalPage.aspx?lang=en&Ticker='
     weekday = datetime.datetime.today().weekday()
@@ -346,9 +349,7 @@ def ScrapeSignalHistory(runno):
         lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('G', 'N', 'U', 'V') and tidm not in ('%s')" % (CoreSQL))  
         
         
-    #scraperwiki.sqlite.execute("drop table if exists Signal_History")  
-    #scraperwiki.sqlite.execute("create table Signal_History (`TIDM` varchar2(8) NOT NULL, `Date` date NOT NULL, `Price` real NOT NULL, `Signal` varchar2(15) NOT NULL, `Confirmation` char(1) NOT NULL, `GBP 100` real NOT NULL, `Last Updated` date NOT NULL,  UNIQUE (`TIDM`, `Date`))")
-    
+   
 
     #lselist = scraperwiki.sqlite.execute("select distinct `TIDM` from company")
     
@@ -741,7 +742,8 @@ def SignalPerformance():
        scraperwiki.sqlite.execute("INSERT into tmptbl_rank (TIDM, Rank) SELECT tidm, (SELECT COUNT()+1 FROM (SELECT DISTINCT Overall_Score FROM Company_Performance AS t WHERE Overall_Score < Company_Performance.Overall_Score)) AS Rank FROM Company_Performance" )
        scraperwiki.sqlite.execute("Update Company_Performance SET Overall_Rank = (select rank from tmptbl_rank where tidm = Company_Performance.tidm)")
        scraperwiki.sqlite.commit()
-          
+       
+   print "ending sig per"       
         
    return;     
 
@@ -821,8 +823,7 @@ def Notify(rerunflag, rundt):
       text = msg.as_string()
       server.sendmail(cGFyc3vdcmF, cPFyc4dvcvF, text)
       server.quit()
-
-  print "ending sig per"      
+      
   return;
 
 #-----------------------------#
@@ -850,82 +851,53 @@ def Logger(rundt, fname, status):
 if __name__ == '__main__':
 
     run = 1
-    #rerunflag = 0                        
+    rerunflag = 0                        
     rundt = datetime.datetime.utcnow()
     gvars()
+
+    #scraperwiki.sqlite.execute("drop table if exists trades")
+    #scraperwiki.sqlite.execute("create table trades (`TXID` integer PRIMARY KEY, `TIDM` string, `OpenDate` date, `OpenSignal` string, `OpenPrice` real, `Stake` string, `LastDate` date, `LastPrice` real, `LastChange` real, `LastSignal` string, `LastSignalDate` date, `Position` string, `CloseDate` Date, `CloseSignal` string, `ClosePrice` real, `Earnings` real)")
+
 
     ### DEBUG  ###
     #scraperwiki.sqlite.execute("delete from RunLog")
     
     Logger(rundt, 'Main', 'Starting')
                                
-    #while run == 1:
-    print "main start rerunflag: %d" % (rerunflag)
+    while run == 1:
+      print "main start rerunflag: %d" % (rerunflag)
 
-    #Logger(rundt, 'ScrapeUserInput', None)
-    #ScrapeUserInput()
-
-    Logger(rundt, 'ScrapeLivePrices', None)
-    rerunflag = ScrapeLivePrices(rerunflag)
-    print "main mid rerunflag: %d" % (rerunflag)
-    
-    #if rerunflag == 0:
-    #  run = 0
-
-    #Logger(rundt, 'ScrapeSignalHistory_Core', None)
-    #ScrapeSignalHistory(1)
-
-    #Logger(rundt, 'UpdateOpenTrades', None)
-    #UpdateOpenTrades()
-
-    Logger(rundt, 'SignalPerformance', None)
-    print "Start Sig Performance"
-    SignalPerformance()
-    print "Completed Sig Performance"
-
-    Logger(rundt, 'Notify', None)
-    print "Start Notify"
-    Notify(rerunflag, rundt)
-    print "Completed Notify"
-
-    #Logger(rundt, 'ScrapeSignalHistory_Ext', None)
-    #ScrapeSignalHistory(2)
-    print "main end rerunflag: %d" % (rerunflag)
-    
-    #### SECOND RUN #####
-    
-    if rerunflag == 1:
-      
-      print "main2 start rerunflag: %d" % (rerunflag)    
-    
       #Logger(rundt, 'ScrapeUserInput', None)
       #ScrapeUserInput()
 
-      Logger(rundt, 'ScrapeLivePrices2', None)
+      Logger(rundt, 'ScrapeLivePrices', None)
       rerunflag = ScrapeLivePrices(rerunflag)
-      print "main2 mid rerunflag: %d" % (rerunflag)
+      print "main mid rerunflag: %d" % (rerunflag)
+      if rerunflag == 0:
+        run = 0
 
-      Logger(rundt, 'ScrapeSignalHistory_Core2', None)
-      ScrapeSignalHistory(1)
+      #Logger(rundt, 'ScrapeSignalHistory_Core', None)
+      #ScrapeSignalHistory(1)
 
       #Logger(rundt, 'UpdateOpenTrades', None)
       #UpdateOpenTrades()
 
-      Logger(rundt, 'SignalPerformance2', None)
-      print "Start Sig Performance2"
+      Logger(rundt, 'SignalPerformance', None)
+      print "Start Sig Performance"
       SignalPerformance()
-      print "Completed Sig Performance2"
+      print "Completed Sig Performance"
 
-      Logger(rundt, 'Notify2', None)
-      print "Start Notify2"
+      Logger(rundt, 'Notify', None)
+      print "Start Notify"
       Notify(rerunflag, rundt)
-      print "Completed Notify2"
+      print "Completed Notify"
 
       #Logger(rundt, 'ScrapeSignalHistory_Ext', None)
       #ScrapeSignalHistory(2)
-      print "main2 end rerunflag: %d" % (rerunflag)
-                      
-    Logger(rundt, 'Main', 'Complete')
+    print "main end rerunflag: %d" % (rerunflag)
+    
+    #### SECOND RUN #####
+
 
  
 
