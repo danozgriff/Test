@@ -23,6 +23,8 @@ def ScrapeLivePrices(rerunflag):
     #Sleep the process while day is still open
     #time.sleep(sleeptime)
     
+    print "Start rerunflag: %d" % (rerunflag)
+    
     #scraperwiki.sqlite.execute("delete from company")  
     scraperwiki.sqlite.execute("drop table if exists company")
     scraperwiki.sqlite.execute("create table company (`TIDM` string, `Company` string, `Yesterday Price` real, `FTSE` string, `Date` date NOT NULL)")
@@ -50,7 +52,8 @@ def ScrapeLivePrices(rerunflag):
     timetilclose = (ftseclosed - dtnow).total_seconds()
 
     if rerunflag == 1:
-      time.sleep(timetilclose)
+      print "timetilclose: %d" % (timetilclose)
+      time.sleep(5)
       rerunflag = 0
 
     if dtnow >= ftseopen and dtnow <= ftseclosed and wkday < 5:
@@ -61,6 +64,8 @@ def ScrapeLivePrices(rerunflag):
        #print "ftse closed"
        tradingopen = "N"
        rerunflag = 0
+        
+    print "mid rerunflag: %d" % (rerunflag)
 
     ftses = ['FTSE 100', 'FTSE 250',  'FTSE Small Cap']
 
@@ -84,53 +89,53 @@ def ScrapeLivePrices(rerunflag):
 
         response = br.open(url, timeout=120.0)
 
+        #for pagenum in range(1):
+        html = response.read()
+        test1 = re.search(r'Day\'s Volume(.*?)<br \/><\/div>', html).group()
+        #tuples = re.findall(r'((\">|\'>)(.*?)<\/))', str(test1.replace(" ", "")).replace("><", ""))
+        tuples = re.findall(r'(\">|\'>|img\/)(.*?)(<\/|\.gif)', str(test1.replace(" ", "")).replace("><", ""))
+        count = 0
+        tidm = ""
+        company = ""
+        price = 0
+        change = 0
+        poscnt = 0
+        overallcnt = 0
 
-        for pagenum in range(1):
-            html = response.read()
-            test1 = re.search(r'Day\'s Volume(.*?)<br \/><\/div>', html).group()
-            #tuples = re.findall(r'((\">|\'>)(.*?)<\/))', str(test1.replace(" ", "")).replace("><", ""))
-            tuples = re.findall(r'(\">|\'>|img\/)(.*?)(<\/|\.gif)', str(test1.replace(" ", "")).replace("><", ""))
-            count = 0
-            tidm = ""
-            company = ""
-            price = 0
-            change = 0
-            poscnt = 0
-            overallcnt = 0
+        for tuple in tuples:
+            if poscnt == 1:
+                company = tuple[1].replace("amp;", "")
+            if poscnt == 2:
+                price = float(tuple[1].replace(",", "").replace("p", ""))
+            if poscnt == 3:
+                change = float(tuple[1][:tuple[1].find("&")].replace(",", ""))
+                if tuple[1][-2:] == 'up':
+                    change = change * -1
+            if poscnt == 4:
+                if tradingopen == "Y":
+                    "Trading Started"
+                    price = price+change
+                    #if tidm == "3IN":
+                      #print change
+                      #print price
+                      #print price+change
 
-            for tuple in tuples:
-                if poscnt == 1:
-                    company = tuple[1].replace("amp;", "")
-                if poscnt == 2:
-                    price = float(tuple[1].replace(",", "").replace("p", ""))
-                if poscnt == 3:
-                    change = float(tuple[1][:tuple[1].find("&")].replace(",", ""))
-                    if tuple[1][-2:] == 'up':
-                        change = change * -1
-                if poscnt == 4:
-                    if tradingopen == "Y":
-                        "Trading Started"
-                        price = price+change
-                        #if tidm == "3IN":
-                          #print change
-                          #print price
-                          #print price+change
+                #+timedelta(days=-1)
+                #"Volume":tuple[1].replace(",", "")
+                scraperwiki.sqlite.execute("insert into Company values (?, ?, ?, ?, ?)",  [tidm+'.L', company, round(price,2), ftse, datetime.date.today()]) 
+                #scraperwiki.sqlite.save(["TIDM", "Date"], data={"TIDM":tidm+'.L', "Company":company, "Yesterday Price":round(price,2), "FTSE":ftse, "Date":datetime.date.today()-timedelta(days=-1)}, table_name='company')
+                scraperwiki.sqlite.commit()
+            if len(tuple[1]) <= 4 and tuple[1][-1:].isalpha() and tuple[1][-1:].isupper() and tuple[1]!=tidm and poscnt!=1:
+                count = count+1
+                tidm = tuple[1]
+                poscnt = 1
+            else:
+                poscnt = poscnt + 1    
 
-                    #+timedelta(days=-1)
-                    #"Volume":tuple[1].replace(",", "")
-                    scraperwiki.sqlite.execute("insert into Company values (?, ?, ?, ?, ?)",  [tidm+'.L', company, round(price,2), ftse, datetime.date.today()]) 
-                    #scraperwiki.sqlite.save(["TIDM", "Date"], data={"TIDM":tidm+'.L', "Company":company, "Yesterday Price":round(price,2), "FTSE":ftse, "Date":datetime.date.today()-timedelta(days=-1)}, table_name='company')
-                    scraperwiki.sqlite.commit()
-                if len(tuple[1]) <= 4 and tuple[1][-1:].isalpha() and tuple[1][-1:].isupper() and tuple[1]!=tidm and poscnt!=1:
-                    count = count+1
-                    tidm = tuple[1]
-                    poscnt = 1
-                else:
-                    poscnt = poscnt + 1    
-
-            #if overallcnt > 9:
-             #    return;
-            #print "%s ftse records were loaded" % (count)
+        #if overallcnt > 9:
+         #    return;
+        #print "%s ftse records were loaded" % (count)
+    print "end rerunflag: %d" % (rerunflag)
     
     return rerunflag;
 
@@ -845,7 +850,7 @@ if __name__ == '__main__':
                                
       Logger(rundt, 'ScrapeLivePrices', None)
       rerunflag = ScrapeLivePrices(rerunflag)
-      print "rerunflag: %d" % (rerunflag)
+      #print "rerunflag: %d" % (rerunflag)
       if rerunflag == 0:
         run = 0
       
