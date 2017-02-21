@@ -866,10 +866,10 @@ if __name__ == '__main__':
       #Logger(rundt, 'UpdateOpenTrades', None)
       #UpdateOpenTrades()
    
-      Logger(rundt, 'SignalPerformance', None)
-      print "Start Sig Performance"
-      SignalPerformance()
-      print "Completed Sig Performance"
+      #Logger(rundt, 'SignalPerformance', None)
+      #print "Start Sig Performance"
+      #SignalPerformance()
+      #print "Completed Sig Performance"
 
       Logger(rundt, 'Notify', None)
       print "Start Notify"
