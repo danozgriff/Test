@@ -47,7 +47,7 @@ def ScrapeLivePrices(rerunflag):
     dtnow = datetime.datetime.utcnow()
     #print now
     ftseopen = dtnow.replace(hour=0, minute=1, second=0, microsecond=0)
-    ftseclosed = dtnow.replace(hour=8, minute=38, second=0, microsecond=0)
+    ftseclosed = dtnow.replace(hour=8, minute=44, second=0, microsecond=0)
     wkday = datetime.datetime.today().weekday()
     timetilclose = (ftseclosed - dtnow).total_seconds()
     if timetilclose < 0:
@@ -822,6 +822,7 @@ def Notify(rerunflag, rundt):
       server.sendmail(cGFyc3vdcmF, cPFyc4dvcvF, text)
       server.quit()
 
+  print "ending sig per"      
   return;
 
 #-----------------------------#
@@ -829,6 +830,8 @@ def Notify(rerunflag, rundt):
 def Logger(rundt, fname, status):
     
     #scraperwiki.sqlite.execute("create table RunLog (`Rundate` date, `RunDateTime` date, `Proc` string, `status` string)") 
+    
+    print "starting Logger"
     
     if status == 'Starting':
       scraperwiki.sqlite.execute("insert into RunLog values (?,?,?,?)", [rundt.date(), rundt, fname, status])
