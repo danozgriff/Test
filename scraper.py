@@ -18,16 +18,16 @@ import random
 ##################################################
 #
 
-def ScrapeLivePrices(rerunflag):
+def ScrapeLivePrices():
 
     #Sleep the process while day is still open
     #time.sleep(sleeptime)
     
     #print "Start rerunflag: %d" % (rerunflag)
     
-    #scraperwiki.sqlite.execute("delete from company")  
-    scraperwiki.sqlite.execute("drop table if exists company")
-    scraperwiki.sqlite.execute("create table company (`TIDM` string, `Company` string, `Yesterday Price` real, `FTSE` string, `Date` date NOT NULL)")
+    scraperwiki.sqlite.execute("delete from company")  
+    #scraperwiki.sqlite.execute("drop table if exists company")
+    #scraperwiki.sqlite.execute("create table company (`TIDM` string, `Company` string, `Yesterday Price` real, `FTSE` string, `Date` date NOT NULL)")
 
     todaydate=datetime.date.today()
     todaydate=todaydate.strftime("%Y-%m-%d") 
@@ -49,27 +49,27 @@ def ScrapeLivePrices(rerunflag):
     ftseopen = dtnow.replace(hour=0, minute=1, second=0, microsecond=0)
     ftseclosed = dtnow.replace(hour=13, minute=15, second=0, microsecond=0)
     wkday = datetime.datetime.today().weekday()
-    timetilclose = (ftseclosed - dtnow).total_seconds()
-    if timetilclose < 0:
-        timetilclose = 0
+    #timetilclose = (ftseclosed - dtnow).total_seconds()
+    #if timetilclose < 0:
+    #    timetilclose = 0
 
-    if rerunflag == 1:
+    #if rerunflag == 1:
       #print "timetilclose: %d" % (timetilclose)
-      time.sleep(timetilclose)  
+    #  time.sleep(timetilclose)  
       # Trading should be closed
-      print "In First"
-      tradingopen = "N"
-      runagainflag = 0
-    elif dtnow >= ftseopen and dtnow <= ftseclosed and wkday < 5 and rerunflag==0:
+    #  print "In First"
+    #  tradingopen = "N"
+    #  runagainflag = 0
+    if dtnow >= ftseopen and dtnow <= ftseclosed and wkday < 5:
        tradingopen = "Y"
-       runagainflag = 1
-       print "In Second"
+       #runagainflag = 1
+       #print "In Second"
        #print "ftse open"
     else:
        #print "ftse closed"
        tradingopen = "N"
-       runagainflag = 0
-       print "In Third"
+       #runagainflag = 0
+       #print "In Third"
         
     #print "mid rerunflag: %d" % (rerunflag)
 
@@ -143,7 +143,7 @@ def ScrapeLivePrices(rerunflag):
         #print "%s ftse records were loaded" % (count)
     #print "end rerunflag: %d" % (rerunflag)
     
-    return runagainflag;
+    return;
 
 ####################################################
 #Load Main Page from British Bulls
@@ -412,9 +412,11 @@ def ScrapeSignalHistory(runno):
 
         #pause before calling the URL
         if runno == 1:
-          time.sleep(random.uniform(3, 10))
+          time.sleep(random.uniform(5, 15))
         elif runno == 2:
-          time.sleep(random.uniform(25, 45))    
+          time.sleep(random.uniform(25, 45))
+          ### CALL PRICE HISTORY FUNCTION ####
+          ScrapePriceHistory(tidm)
 
         response = br.open(url + tidm)
         #debugcnt = debugcnt + 1
@@ -498,7 +500,7 @@ def signal_accuracy(tidm, d1date, todaydate):
 def standard_deviation(tidm, d1date, todaydate):
     """Calculates the standard deviation for a list of numbers."""
 
-    complist = scraperwiki.sqlite.execute("select `Price` from Signal_History where tidm = '%s' and date between '%s' and '%s'" % (tidm, d1date, todaydate))
+    complist = scraperwiki.sqlite.execute("select `High` - `Low` from Company_History where tidm = '%s' and date between '%s' and '%s'" % (tidm, d1date, todaydate))
      
     lstlength = len(complist)
     
@@ -731,12 +733,6 @@ def SignalPerformance():
            D1PC = (tprice - CalcPrice) / CalcPrice
 
 
-            
-           stddev = standard_deviation(tidm, todaydate, d1date)
-           sigacc = signal_accuracy(tidm, todaydate, d1date)
-            
-
-
            #print "MaxPrice: %f" , (MaxPrice)
            #print "MixPrice: %f" , (MinPrice)
            #print "PriceDelta: %f" , (PriceDelta)
@@ -751,6 +747,8 @@ def SignalPerformance():
                T90D = round(D1PC,3)               
            elif timeint == 180:
                T180D = round(D1PC,3)
+               stddev = standard_deviation(tidm, todaydate, d1date)
+               sigacc = signal_accuracy(tidm, todaydate, d1date)
                total = T3D + T10D + T30D + T90D + T180D
 
                T180Earnings = ((tprice - CalcPrice)/CalcPrice+1)*100
@@ -888,58 +886,35 @@ def Logger(rundt, fname, status):
 # MAIN
 ########################################################
 if __name__ == '__main__':
-
-    run = 1
-    rerunflag = 0                        
+                      
     rundt = datetime.datetime.utcnow()
     gvars()
 
-    #scraperwiki.sqlite.execute("create table Company_History (`TIDM` varchar2(8) NOT NULL, `Date` date NOT NULL, `Open` real NOT NULL, `High` real NOT NULL, `Low` real NOT NULL, `Close` real NOT NULL, `Volume` integer NOT NULL, UNIQUE (`TIDM`, `Date`))")
+    scraperwiki.sqlite.execute("create table Company_History (`TIDM` varchar2(8) NOT NULL, `Date` date NOT NULL, `Open` real NOT NULL, `High` real NOT NULL, `Low` real NOT NULL, `Close` real NOT NULL, `Volume` integer NOT NULL, UNIQUE (`TIDM`, `Date`))")
 
-
-    #scraperwiki.sqlite.execute("drop table if exists trades")
-    #scraperwiki.sqlite.execute("create table trades (`TXID` integer PRIMARY KEY, `TIDM` string, `OpenDate` date, `OpenSignal` string, `OpenPrice` real, `Stake` string, `LastDate` date, `LastPrice` real, `LastChange` real, `LastSignal` string, `LastSignalDate` date, `Position` string, `CloseDate` Date, `CloseSignal` string, `ClosePrice` real, `Earnings` real)")
-
-
-    ### DEBUG  ###
-    #scraperwiki.sqlite.execute("delete from RunLog")
-    
     Logger(rundt, 'Main', 'Starting')
-                               
-    while run == 1:
-      print "main start rerunflag: %d" % (rerunflag)
 
-      ScrapePriceHistory('POG.L')
+    Logger(rundt, 'ScrapeUserInput', None)
+    ScrapeUserInput()
 
-      #Logger(rundt, 'ScrapeUserInput', None)
-      #ScrapeUserInput()
+    Logger(rundt, 'ScrapeLivePrices', None)
+    ScrapeLivePrices()
 
-      #Logger(rundt, 'ScrapeLivePrices', None)
-      #rerunflag = ScrapeLivePrices(rerunflag)
-      #print "main mid rerunflag: %d" % (rerunflag)
-      if rerunflag == 0:
-        run = 0
+    Logger(rundt, 'ScrapeSignalHistory_Core', None)
+    ScrapeSignalHistory(1)
 
-      #Logger(rundt, 'ScrapeSignalHistory_Core', None)
-      #ScrapeSignalHistory(1)
+    Logger(rundt, 'UpdateOpenTrades', None)
+    UpdateOpenTrades()
 
-      #Logger(rundt, 'UpdateOpenTrades', None)
-      #UpdateOpenTrades()
+    Logger(rundt, 'SignalPerformance', None)
+    SignalPerformance()
 
-      #Logger(rundt, 'SignalPerformance', None)
-      #print "Start Sig Performance"
-      #SignalPerformance()
-      #print "Completed Sig Performance"
+    #Logger(rundt, 'Notify', None)
+    #Notify(rerunflag, rundt)
 
-      #Logger(rundt, 'Notify', None)
-      #print "Start Notify"
-      #Notify(rerunflag, rundt)
-      #print "Completed Notify"
+    Logger(rundt, 'ScrapeSignalHistory_Ext', None)
+    ScrapeSignalHistory(2)
 
-      #Logger(rundt, 'ScrapeSignalHistory_Ext', None)
-      #ScrapeSignalHistory(2)
-
-    print "main end rerunflag: %d" % (rerunflag)
     Logger(rundt, 'Main', 'Complete')
 
 
