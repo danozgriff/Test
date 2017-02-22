@@ -323,7 +323,8 @@ def ScrapePriceHistory(tidm):
   p_startdate = p_enddate - datetime.timedelta(days=10)
 
   csvurl = "http://chart.finance.yahoo.com/table.csv?s=%s&a=%d&b=%s&c=%s&d=%d&e=%s&f=%s&g=d&ignore=.csv" % (tidm, int(p_startdate.strftime("%-m"))-1, p_startdate.strftime("%d"), p_startdate.strftime("%Y"), int(p_enddate.strftime("%-m"))-1, p_enddate.strftime("%d"), p_enddate.strftime("%Y"))
-  
+  print csvurl  
+
   headercnt = 0
 
   data = scraperwiki.scrape(csvurl)
@@ -375,7 +376,7 @@ def ScrapeSignalHistory(runno):
         lselist = scraperwiki.sqlite.execute(CoreSQL)
     elif runno == 2:
       if weekday == 0:
-        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '2') and tidm not in ('%s')" % (CoreSQL))
+        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('A', 'H', 'O') and tidm not in ('%s')" % (CoreSQL))
       elif weekday == 1:
         lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('B', 'I', 'P', 'W') and tidm not in ('%s')" % (CoreSQL))        
       elif weekday == 2:
@@ -385,7 +386,7 @@ def ScrapeSignalHistory(runno):
       elif weekday == 4:
         lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('E', 'S', 'Z') and tidm not in ('%s')" % (CoreSQL))  
       elif weekday == 5:
-        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('1', '2', '3', '4', '5', '6', '7', '8', '9', 'F', 'M', 'T') and tidm not in ('%s')" % (CoreSQL))  
+        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('F', 'M', 'T', '1', '2', '3', '4', '5', '6', '7', '8', '9') and tidm not in ('%s')" % (CoreSQL))  
       #Must be Sunday..
       else:
         lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('G', 'N', 'U', 'V') and tidm not in ('%s')" % (CoreSQL))  
@@ -894,20 +895,20 @@ if __name__ == '__main__':
 
     Logger(rundt, 'Main', 'Starting')
 
-    Logger(rundt, 'ScrapeUserInput', None)
-    ScrapeUserInput()
+    #Logger(rundt, 'ScrapeUserInput', None)
+    #ScrapeUserInput()
 
-    Logger(rundt, 'ScrapeLivePrices', None)
-    ScrapeLivePrices()
+    #Logger(rundt, 'ScrapeLivePrices', None)
+    #ScrapeLivePrices()
 
-    Logger(rundt, 'ScrapeSignalHistory_Core', None)
-    ScrapeSignalHistory(1)
+    #Logger(rundt, 'ScrapeSignalHistory_Core', None)
+    #ScrapeSignalHistory(1)
 
-    Logger(rundt, 'UpdateOpenTrades', None)
-    UpdateOpenTrades()
+    #Logger(rundt, 'UpdateOpenTrades', None)
+    #UpdateOpenTrades()
 
-    Logger(rundt, 'SignalPerformance', None)
-    SignalPerformance()
+    #Logger(rundt, 'SignalPerformance', None)
+    #SignalPerformance()
 
     #Logger(rundt, 'Notify', None)
     #Notify(rerunflag, rundt)
