@@ -341,7 +341,7 @@ def ScrapePriceHistory(tidm):
         cvolume = row[5]
         
         if headercnt == 2:  
-          print "tidm: %s, cdate: %s, copen: %f, chigh: %f, clow: %f, cclose: %f, cvolume: %d" % (tidm, cdate, copen, chigh, clow, cclose, cvolume)
+          print "tidm: %s, cdate: %s, copen: %f, chigh: %f, clow: %f, cclose: %f, cvolume: %s" % (tidm, cdate, copen, chigh, clow, cclose, cvolume)
 
         scraperwiki.sqlite.execute("insert or ignore into Company_History values (?, ?, ?, ?, ?, ?, ?)",  [tidm, cdate, copen, chigh, clow, cclose, cvolume])   
 
