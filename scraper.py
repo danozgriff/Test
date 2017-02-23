@@ -340,8 +340,8 @@ def ScrapePriceHistory(tidm):
         cclose = float(row[4])
         cvolume = row[5]
         
-        if headercnt == 2:  
-          print "tidm: %s, cdate: %s, copen: %f, chigh: %f, clow: %f, cclose: %f, cvolume: %s" % (tidm, cdate, copen, chigh, clow, cclose, cvolume)
+        #if headercnt == 2:  
+        #  print "tidm: %s, cdate: %s, copen: %f, chigh: %f, clow: %f, cclose: %f, cvolume: %s" % (tidm, cdate, copen, chigh, clow, cclose, cvolume)
 
         scraperwiki.sqlite.execute("insert or ignore into Company_History values (?, ?, ?, ?, ?, ?, ?)",  [tidm, cdate, copen, chigh, clow, cclose, cvolume])   
 
@@ -923,7 +923,7 @@ if __name__ == '__main__':
     #Logger(rundt, 'ScrapeSignalHistory_Ext', None)
     #ScrapeSignalHistory(2)
     
-    ScrapePriceHistory('POG.L')
+    ScrapePriceHistory('LGL.L')
 
     Logger(rundt, 'Main', 'Complete')
 
