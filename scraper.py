@@ -11,6 +11,7 @@ import smtplib
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 import random
+from urllib2 import HTTPError
 
 
 ##################################################      
@@ -320,28 +321,31 @@ def ScrapePriceHistory(tidm):
   #scraperwiki.sqlite.execute("create table Company_History (`TIDM` varchar2(8) NOT NULL, `Date` date NOT NULL, `Open` real NOT NULL, `High` real NOT NULL, `Low` real NOT NULL, `Close` real NOT NULL, `Volume` integer NOT NULL, UNIQUE (`TIDM`, `Date`))")
 
   p_enddate = datetime.date.today()
-  p_startdate = p_enddate - datetime.timedelta(days=10)
+  p_startdate = p_enddate - datetime.timedelta(days=365)
 
-  csvurl = "http://chart.finance.yahoo.com/table.csv?s=%s&a=%d&b=%s&c=%s&d=%d&e=%s&f=%s&g=d&ignore=.csv" % (tidm, int(p_startdate.strftime("%-m"))-1, p_startdate.strftime("%d"), p_startdate.strftime("%Y"), int(p_enddate.strftime("%-m"))-1, p_enddate.strftime("%d"), p_enddate.strftime("%Y"))
-  print csvurl  
+  csvurl = "http://chart.finance.yahoo.com/table.csv?s=%s&a=%d&b=%s&c=%s&d=%d&e=%s&f=%s&g=d&ignore=.csv" % (tidm, int(p_startdate.strftime("%-m"))-1, p_startdate.strftime("%d"), p_startdate.strftime("%Y"), int(p_enddate.strftime("%-m"))-1, p_enddate.strftime("%d"), p_enddate.strftime("%Y"))  
 
   headercnt = 0
 
-  data = scraperwiki.scrape(csvurl)
-  reader = csv.reader(data.splitlines()) 
+  try: 
+    data = scraperwiki.scrape(csvurl)
+    reader = csv.reader(data.splitlines()) 
 
-  for row in reader:     
-    if headercnt > 0:      
-      cdate = row[0]
-      copen = float(row[1])
-      chigh = float(row[2])
-      clow = float(row[3])
-      cclose = float(row[4])
-      cvolume = row[5]
+    for row in reader:     
+      if headercnt > 0:      
+        cdate = row[0]
+        copen = float(row[1])
+        chigh = float(row[2])
+        clow = float(row[3])
+        cclose = float(row[4])
+        cvolume = row[5]
 
-      scraperwiki.sqlite.execute("insert or ignore into Company_History values (?, ?, ?, ?, ?, ?, ?)",  [tidm, cdate, copen, chigh, clow, cclose, cvolume])   
+        scraperwiki.sqlite.execute("insert or ignore into Company_History values (?, ?, ?, ?, ?, ?, ?)",  [tidm, cdate, copen, chigh, clow, cclose, cvolume])   
 
-    headercnt+=1
+      headercnt+=1
+ 
+  except HTTPError, e:
+    print "%s HTTPError: " % (tidm), e.code
 
   scraperwiki.sqlite.commit()
 
@@ -524,7 +528,7 @@ def standard_deviation(tidm, d1date, todaydate):
       variance = ssd / (lstlength - 1)
       sd = sqrt(variance)
     else:
-      sd = 0
+      sd = 999
     # You could `return sd` here.
 
     return sd
@@ -913,8 +917,10 @@ if __name__ == '__main__':
     #Logger(rundt, 'Notify', None)
     #Notify(rerunflag, rundt)
 
-    Logger(rundt, 'ScrapeSignalHistory_Ext', None)
-    ScrapeSignalHistory(2)
+    #Logger(rundt, 'ScrapeSignalHistory_Ext', None)
+    #ScrapeSignalHistory(2)
+    
+    ScrapePriceHistory('POG.L')
 
     Logger(rundt, 'Main', 'Complete')
 
