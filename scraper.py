@@ -402,7 +402,7 @@ def ScrapeSignalHistory(runno):
         lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('D', 'K', 'R', 'Y') and tidm not in ('%s')" % (CoreSQL))  
       elif weekday == 4:
         #lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('E', 'S', 'Z') and tidm not in ('%s')" % (CoreSQL))  
-        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('E', 'F') and tidm not in ('%s')" % (CoreSQL))  
+        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('E') and tidm not in ('%s')" % (CoreSQL))  
       elif weekday == 5:
         lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('F', 'M', 'T', '1', '2', '3', '4', '5', '6', '7', '8', '9') and tidm not in ('%s')" % (CoreSQL))  
       #Must be Sunday..
@@ -420,6 +420,7 @@ def ScrapeSignalHistory(runno):
         
         tidm = str(x)[3:-2]
         #tidm = str(x)
+        print "signal his tidm:%s" % (tidm) 
         #print tidm
         
         ##siglist = scraperwiki.sqlite.execute("select count(*) from Signal_History where tidm = '%s' and (Signal IN ('SELL',  'SHORT',  'STAY IN CASH',  'STAY SHORT') OR (Signal IN ('BUY, 'STAY LONG') AND ))" % (tidm, d1date))
