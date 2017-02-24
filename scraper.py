@@ -213,12 +213,8 @@ def ScrapeBritishMain():
 
 def gvars():
 
-    global pricehistidm,pricehiscnt, sighistidm, sighistcnt, cGFzc3dvcmQ, cGFdc2evcmQ, cGFyc3vdcmF, cPFyc4dvcvF
+    global cGFzc3dvcmQ, cGFdc2evcmQ, cGFyc3vdcmF, cPFyc4dvcvF
 
-    pricehistidm = 'z'
-    pricehiscnt = 0
-    sighistidm = 'z'
-    sighistcnt = 0
     cGFzc3dvcmQ = base64.b64decode("ZnRzZXBhc3M=")
     cGFdc2evcmQ = base64.b64decode("c210cC5nbWFpbC5jb20=")
     cGFyc3vdcmF = base64.b64decode("ZGFub3pncmlmZkBnbWFpbC5jb20=")
@@ -324,16 +320,19 @@ def ScrapePriceHistory(tidm):
 
   #scraperwiki.sqlite.execute("create table Company_History (`TIDM` varchar2(8) NOT NULL, `Date` date NOT NULL, `Open` real NOT NULL, `High` real NOT NULL, `Low` real NOT NULL, `Close` real NOT NULL, `Volume` integer NOT NULL, UNIQUE (`TIDM`, `Date`))")
 
+  pricehistidm = 'z'
+  pricehiscnt = 0
+    
   p_enddate = datetime.date.today()
   p_startdate = p_enddate - datetime.timedelta(days=365)
 
   csvurl = "http://chart.finance.yahoo.com/table.csv?s=%s&a=%d&b=%s&c=%s&d=%d&e=%s&f=%s&g=d&ignore=.csv" % (tidm, int(p_startdate.strftime("%-m"))-1, p_startdate.strftime("%d"), p_startdate.strftime("%Y"), int(p_enddate.strftime("%-m"))-1, p_enddate.strftime("%d"), p_enddate.strftime("%Y"))  
-  if sighistidm == tidm:
-    sighistcnt = sighiscnt + 1
-    print "Price History TIDM: %s Count: %d" % (sighistidm, sighiscnt)
-  if sighistidm != tidm:
-    sighistidm = tidm
-    sighiscnt = 0
+  if pricehistidm == tidm:
+    pricehistcnt = pricehiscnt + 1
+    print "Signal History TIDM: %s Count: %d" % (pricehistidm, pricehiscnt)
+  elif pricehistidm != tidm:
+    pricehistidm = tidm
+    pricehiscnt = 0
 
   headercnt = 0
 
@@ -436,14 +435,17 @@ def ScrapeSignalHistory(runno):
           time.sleep(random.uniform(25, 45))
           ### CALL PRICE HISTORY FUNCTION ####
           ScrapePriceHistory(tidm)
+        
+        sighistidm = 'z'
+        sighistcnt = 0
 
         response = br.open(url + tidm)
-        if pricehistidm == tidm:
-          pricehistcnt = pricehiscnt + 1
-          print "Signal History TIDM: %s Count: %d" % (pricehistidm, pricehiscnt)
-        if pricehistidm != tidm:
-          pricehistidm = tidm
-          pricehiscnt = 0
+        if sighistidm == tidm:
+          sighistcnt = sighiscnt + 1
+          print "Price History TIDM: %s Count: %d" % (sighistidm, sighiscnt)
+        elif sighistidm != tidm:
+          sighistidm = tidm
+          sighiscnt = 0
         #debugcnt = debugcnt + 1
     
     #for pagenum in range(1):
