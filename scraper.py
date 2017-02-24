@@ -337,6 +337,7 @@ def ScrapePriceHistory(tidm):
   headercnt = 0
 
   try: 
+    print "price his tidm:%s" % (tidm) 
     data = scraperwiki.scrape(csvurl)
     reader = csv.reader(data.splitlines()) 
 
