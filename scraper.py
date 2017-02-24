@@ -213,8 +213,12 @@ def ScrapeBritishMain():
 
 def gvars():
 
-    global cGFzc3dvcmQ, cGFdc2evcmQ, cGFyc3vdcmF, cPFyc4dvcvF
+    global pricehistidm,pricehiscnt, sighistidm, sighistcnt, cGFzc3dvcmQ, cGFdc2evcmQ, cGFyc3vdcmF, cPFyc4dvcvF
 
+    pricehistidm = 'z'
+    pricehiscnt = 0
+    sighistidm = 'z'
+    sighistcnt = 0
     cGFzc3dvcmQ = base64.b64decode("ZnRzZXBhc3M=")
     cGFdc2evcmQ = base64.b64decode("c210cC5nbWFpbC5jb20=")
     cGFyc3vdcmF = base64.b64decode("ZGFub3pncmlmZkBnbWFpbC5jb20=")
@@ -324,6 +328,12 @@ def ScrapePriceHistory(tidm):
   p_startdate = p_enddate - datetime.timedelta(days=365)
 
   csvurl = "http://chart.finance.yahoo.com/table.csv?s=%s&a=%d&b=%s&c=%s&d=%d&e=%s&f=%s&g=d&ignore=.csv" % (tidm, int(p_startdate.strftime("%-m"))-1, p_startdate.strftime("%d"), p_startdate.strftime("%Y"), int(p_enddate.strftime("%-m"))-1, p_enddate.strftime("%d"), p_enddate.strftime("%Y"))  
+  if sighistidm == tidm:
+    sighistcnt = sighiscnt + 1
+    print "Price History TIDM: %s Count: %d" % (sighistidm, sighiscnt)
+  if sighistidm != tidm:
+    sighistidm = tidm
+    sighiscnt = 0
 
   headercnt = 0
 
@@ -391,7 +401,8 @@ def ScrapeSignalHistory(runno):
       elif weekday == 3:
         lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('D', 'K', 'R', 'Y') and tidm not in ('%s')" % (CoreSQL))  
       elif weekday == 4:
-        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('E', 'S', 'Z') and tidm not in ('%s')" % (CoreSQL))  
+        #lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('E', 'S', 'Z') and tidm not in ('%s')" % (CoreSQL))  
+        lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('E', 'F') and tidm not in ('%s')" % (CoreSQL))  
       elif weekday == 5:
         lselist = scraperwiki.sqlite.execute("select distinct `tidm` from company where substr(tidm,1,1) in ('F', 'M', 'T', '1', '2', '3', '4', '5', '6', '7', '8', '9') and tidm not in ('%s')" % (CoreSQL))  
       #Must be Sunday..
@@ -427,6 +438,12 @@ def ScrapeSignalHistory(runno):
           ScrapePriceHistory(tidm)
 
         response = br.open(url + tidm)
+        if pricehistidm == tidm:
+          pricehistcnt = pricehiscnt + 1
+          print "Signal History TIDM: %s Count: %d" % (pricehistidm, pricehiscnt)
+        if pricehistidm != tidm:
+          pricehistidm = tidm
+          pricehiscnt = 0
         #debugcnt = debugcnt + 1
     
     #for pagenum in range(1):
@@ -923,7 +940,7 @@ if __name__ == '__main__':
     #Logger(rundt, 'ScrapeSignalHistory_Ext', None)
     #ScrapeSignalHistory(2)
     
-    ScrapePriceHistory('LGL.L')
+    ScrapePriceHistory(2)
 
     Logger(rundt, 'Main', 'Complete')
 
